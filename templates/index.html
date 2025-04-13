@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Police Technology Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
+    <style>
+        :root {
+            --primary-pink: #ff69b4;
+            --secondary-pink: #ffb6c1;
+            --light-pink: #ffe4e1;
+            --dark-pink: #db7093;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-pink);
+            color: #333;
+            cursor: none;
+            overflow-x: hidden;
+            position: relative;
+            background-image: url('https://cdn.pixabay.com/photo/2023/09/13/14/22/cactus-8251095_1280.jpg');
+            background-repeat: repeat;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            background-color: var(--light-pink);
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        /* Flower cursor trail */
+        .flower-trail {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s, transform 0.2s;
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.2));
+        }
+
+        .navbar {
+            background-color: var(--primary-pink);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: var(--dark-pink);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: var(--primary-pink);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .data-table {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--secondary-pink);
+            align-items: center;
+        }
+
+        .table-header {
+            font-weight: 600;
+            background-color: var(--secondary-pink);
+            border-radius: 5px;
+            position: sticky;
+            top: 0;
+        }
+
+        #map {
+            height: 600px;
+            border-radius: 10px;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--secondary-pink);
+        }
+
+        .popup-content {
+            font-family: 'Poppins', sans-serif;
+            min-width: 250px;
+        }
+
+        .popup-content h3 {
+            color: var(--primary-pink);
+            margin-top: 0;
+        }
+
+        .popup-link {
+            color: var(--primary-pink);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .popup-link:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: var(--primary-pink);
+        }
+
+        .file-upload {
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .file-upload button {
+            background-color: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .file-upload button:hover {
+            background-color: var(--dark-pink);
+        }
+
+        #file-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+            gap: 0.5rem;
+        }
+
+        .pagination button {
+            background-color: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .pagination button:disabled {
+            background-color: var(--secondary-pink);
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--primary-pink);
+            font-weight: 600;
+        } 
+        
+        /* Updated image container styles */
+        .image-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            height: 0;
+            overflow: hidden;
+            transition: height 0.5s ease;
+        }
+
+        #cute-image {
+            max-width: 200px;
+            border-radius: 50%;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease 0.2s;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+            z-index: 2;
+            position: relative;
+        }
+
+        .image-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            height: 0;
+            overflow: hidden;
+            transition: height 0.5s ease;
+        }
+
+        #cute-image {
+            max-width: 200px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease 0.2s;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+            z-index: 2;
+            position: relative;
+            border-radius: 10px; /* Optional: Add slight rounded corners instead of circle */
+        }
+
+        .image-container.active {
+            height: 220px;
+        }
+
+        .image-container.active #cute-image {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .bubble-effect {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            background-color: rgba(255, 182, 193, 0.3);
+            border-radius: 50%;
+            z-index: 1;
+            animation: bubblePulse 3s infinite ease-in-out;
+        }
+
+        @keyframes bubblePulse {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+            100% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+        }
+
+        /* 8-bit loading screen styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--light-pink);
+            opacity: 78%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-screen.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-text {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 36px;
+            color: var(--primary-pink);
+            margin-bottom: 30px;
+            text-shadow: 4px 4px 0px rgba(255, 182, 193, 0.5);
+        }
+
+        .hearts-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .pixel-heart {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .pixel {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: var(--primary-pink);
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .table-row {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto;
+                gap: 0.5rem;
+            }
+            
+            .navbar a {
+                margin: 0 0.5rem;
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .loading-text {
+                font-size: 24px;
+            }
+
+            .pixel-heart {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 8-bit style loading screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-text" id="loading-text">LOADING...</div>
+            <div class="hearts-container">
+                <div class="pixel-heart" id="heart1"></div>
+                <div class="pixel-heart" id="heart2"></div>
+                <div class="pixel-heart" id="heart3"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="navbar">
+            <div class="container">
+                <a href="#table">Data Table</a>
+                <a href="#map">Interactive Map</a>
+            </div>
+        </div>
+
+        <div class="container">
+            <h1>Police Technology Tracker</h1>
+        
+            <div class="file-upload">
+                <div class="image-container">
+                    <div class="bubble-effect"></div>
+                    <img id="cute-image" src="https://media-hosting.imagekit.io/726cdd5ca5dc492c/your_cute_image.jpg?Expires=1838975828&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=F9aE8oApwrgJ5-P3uU5CUnqwJqj-SwoU2CHZwYC3uxJTcOaHaZ31gnuD1MYuirLfoA8IV-6XhRHkh19z3-YVuamj32Qo4rUwHbKTo9FE4R-~m3MK85D~qf21SMP3D8CaWs2qFcMd0kIwZr~MFwM4QqS4ta0CErJXtPGEg49f05WrkJf~nIlu1ueTkvBrtPhBPxkxDFIxmHHBPo1NHWf3uKTCZx4OMYt-iyG9k1FMGPew4SF5EHxW2QJg5dJIDPaeCm~rbLhA5lj7vXr7ZbViZC89pMNgqdA0rLDOgzHYEqo84E2oNel0mbn5fhauZgcakCHvftHPKuz3zg~nwyj-mA__" alt="Verification Image">
+                </div>
+                <button id="verify-btn">Verify You Are Human</button>
+                <div id="verification-message" style="display: none; color: green;">Verification successful!</div>
+                <button id="upload-btn" style="display: none;">Upload CSV File</button>
+                <input type="file" id="csv-file" accept=".csv" style="display: none;">
+                <div id="file-info"></div>
+            </div>
+
+            <div id="loading" class="loading">Loading data...</div>
+
+            <div id="table-section">
+                <div id="table" class="data-table">
+                    <div class="table-row table-header">
+                        <div>City</div>
+                        <div>State</div>
+                        <div>Technology</div>
+                        <div>Vendor</div>
+                        <div>Date</div>
+                    </div>
+                </div>
+
+                <div class="pagination-info">
+                    Showing <span id="start-item">0</span>-<span id="end-item">0</span> of <span id="total-items">0</span> entries
+                </div>
+
+                <div class="pagination">
+                    <button id="prev-page" disabled>Previous</button>
+                    <button id="next-page" disabled>Next</button>
+                </div>
+            </div>
+
+            <div id="map"></div>
+        </div>
+    </div>    
+
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="flower" viewBox="0 0 100 100">
+            <path d="M50 20a5 5 0 0 1 5 5v20a5 5 0 0 1-10 0V25a5 5 0 0 1 5-5z" fill="#ff69b4"/>
+            <path d="M50 80a5 5 0 0 1 5-5h20a5 5 0 0 1 0 10H55a5 5 0 0 1-5-5z" fill="#ff69b4"/>
+            <path d="M20 50a5 5 0 0 1 5-5h20a5 5 0 0 1 0 10H25a5 5 0 0 1-5-5z" fill="#ff69b4"/>
+            <path d="M80 50a5 5 0 0 1-5 5H55a5 5 0 0 1 0-10h20a5 5 0 0 1 5 5z" fill="#ff69b4"/>
+            <circle cx="50" cy="50" r="15" fill="#ffb6c1"/>
+        </symbol>
+    </svg>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script>
+        // ===== FLOWER CURSOR TRAIL =====
+        const flowers = [];
+        const flowerCount = 12;
+        const flowerColors = ['#ff69b4', '#ffb6c1', '#db7093', '#ff85a2', '#ff9ebb'];
+        const flowerSizes = [18, 20, 22, 24, 26];
+        
+        // Create flower elements
+        for (let i = 0; i < flowerCount; i++) {
+            const flower = document.createElement('div');
+            flower.className = 'flower-trail';
+            const size = flowerSizes[Math.floor(Math.random() * flowerSizes.length)];
+            const color = flowerColors[Math.floor(Math.random() * flowerColors.length)];
+            
+            flower.innerHTML = `
+                <svg width="${size}" height="${size}" style="color: ${color}">
+                    <use href="#flower"></use>
+                </svg>
+            `;
+            
+            flower.style.opacity = 0;
+            flower.style.transition = `opacity ${0.2 + i*0.05}s, transform ${0.2 + i*0.03}s`;
+            document.body.appendChild(flower);
+            flowers.push({
+                element: flower,
+                size: size,
+                delay: i * 50
+            });
+        }
+        
+        let mouseX = 0;
+        let mouseY = 0;
+        let lastPositions = [];
+        const positionHistoryLength = 5;
+        
+        // Track mouse movement
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Store recent positions for smoother trail
+            lastPositions.unshift({x: mouseX, y: mouseY});
+            if (lastPositions.length > positionHistoryLength) {
+                lastPositions.pop();
+            }
+            
+            updateFlowerTrail();
+        });
+        
+        function updateFlowerTrail() {
+            flowers.forEach((flower, index) => {
+                const posIndex = Math.min(index, lastPositions.length - 1);
+                if (posIndex >= 0) {
+                    const {x, y} = lastPositions[posIndex];
+                    
+                    // Calculate delay-based movement
+                    setTimeout(() => {
+                        flower.element.style.left = `${x}px`;
+                        flower.element.style.top = `${y}px`;
+                        flower.element.style.opacity = 0.8 - (index * 0.06);
+                        flower.element.style.transform = `
+                            translate(-50%, -50%) 
+                            rotate(${index * 15}deg) 
+                            scale(${0.7 + (index * 0.03)})
+                        `;
+                    }, flower.delay);
+                }
+            });
+        }
+        
+        // Hide flowers when mouse stops
+        let mouseStopTimer;
+        document.addEventListener('mousemove', () => {
+            clearTimeout(mouseStopTimer);
+            flowers.forEach(flower => {
+                flower.element.style.opacity = 0.8;
+            });
+            mouseStopTimer = setTimeout(() => {
+                flowers.forEach(flower => {
+                    flower.element.style.opacity = 0;
+                });
+            }, 300);
+        });
+
+        // ===== 8-BIT LOADING ANIMATION =====
+        // Heart pixel art pattern
+        const heartPattern = [
+            [0,0,1,1,0,0,1,1,0,0],
+            [0,1,1,1,1,1,1,1,1,0],
+            [1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1],
+            [0,1,1,1,1,1,1,1,1,0],
+            [0,0,1,1,1,1,1,1,0,0],
+            [0,0,0,1,1,1,1,0,0,0],
+            [0,0,0,0,1,1,0,0,0,0]
+        ];
+
+        // Create pixel hearts for loading screen
+        const hearts = [
+            document.getElementById('heart1'),
+            document.getElementById('heart2'),
+            document.getElementById('heart3')
+        ];
+
+        // Create each heart
+        hearts.forEach(heart => {
+            heartPattern.forEach((row, rowIndex) => {
+                row.forEach((pixel, colIndex) => {
+                    if (pixel === 1) {
+                        const pixelElement = document.createElement('div');
+                        pixelElement.classList.add('pixel');
+                        pixelElement.style.left = `${colIndex * 5}px`;
+                        pixelElement.style.top = `${rowIndex * 5}px`;
+                        heart.appendChild(pixelElement);
+                    }
+                });
+            });
+        });
+
+        // Animation function for the hearts
+        function animateHearts() {
+            let step = 0;
+            const interval = setInterval(() => {
+                // Update heart visibility based on step
+                hearts.forEach((heart, index) => {
+                    heart.style.opacity = index < step ? '1' : '0';
+                });
+                
+                // Cycle through steps (0, 1, 2, 3, 0, 1, etc.)
+                step = (step + 1) % 4;
+                
+                // Add a little delay when all hearts are hidden
+                if (step === 0) {
+                    setTimeout(() => {
+                        step = 1;
+                    }, 300);
+                }
+            }, 500);
+            
+            return interval;
+        }
+
+        // ===== APPLICATION CODE =====
+        // Configuration
+        const ITEMS_PER_PAGE = 50;
+        const MAX_MAP_MARKERS = 300;
+        let currentPage = 1;
+        let allData = [];
+        let markersCluster = null;
+        let heartAnimationInterval;
+
+        // Initialize map
+        const map = L.map('map').setView([37.8, -96], 4);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Initialize marker cluster group
+        markersCluster = L.markerClusterGroup({
+            maxClusterRadius: 40,
+            disableClusteringAtZoom: 8,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true
+        });
+        map.addLayer(markersCluster);
+
+        // Verification button handler
+        document.getElementById('verify-btn').addEventListener('click', function() {
+            // Show the 8-bit loading screen
+            const loadingScreen = document.getElementById('loading-screen');
+            loadingScreen.classList.add('active');
+            
+            // Start the heart animation
+            heartAnimationInterval = animateHearts();
+            
+            // After a delay, complete the verification process
+            setTimeout(() => {
+                // Change loading text to "VERIFIED!"
+                document.getElementById('loading-text').textContent = "VERIFIED!";
+                
+                // Show all hearts
+                hearts.forEach(heart => {
+                    heart.style.opacity = 1;
+                });
+                
+                // After another short delay, hide loading screen and show verification success
+                setTimeout(() => {
+                    // Clear the heart animation interval
+                    clearInterval(heartAnimationInterval);
+                    
+                    // Hide loading screen
+                    loadingScreen.classList.remove('active');
+                    
+                    // Show the image container and verification success elements
+                    const imageContainer = document.querySelector('.image-container');
+                    imageContainer.classList.add('active');
+                    document.getElementById('verification-message').style.display = 'block';
+                    document.getElementById('upload-btn').style.display = 'inline-block';
+                    document.getElementById('verify-btn').style.display = 'none';
+                }, 1500);
+            }, 6000); // 6 seconds of loading animation
+        });
+
+        // File upload handling
+        document.getElementById('upload-btn').addEventListener('click', () => {
+            document.getElementById('csv-file').click();
+        });
+
+        document.getElementById('csv-file').addEventListener('change', handleFileUpload);
+
+        // Pagination controls
+        document.getElementById('prev-page').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                updateTableAndMap();
+            }
+        });
+
+        document.getElementById('next-page').addEventListener('click', () => {
+            const totalPages = Math.ceil(allData.length / ITEMS_PER_PAGE);
+            if (currentPage < totalPages) {
+                currentPage++;
+                updateTableAndMap();
+            }
+        });
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            document.getElementById('file-info').textContent = `Loaded: ${file.name}`;
+            document.getElementById('loading').style.display = 'block';
+            
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    allData = results.data.filter(item => item.City && item.State);
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('total-items').textContent = allData.length;
+                    currentPage = 1;
+                    updateTableAndMap();
+                },
+                error: function(error) {
+                    console.error('Error parsing CSV:', error);
+                    document.getElementById('loading').textContent = 'Error loading file. Please try again.';
+                }
+            });
+        }
+
+        // Update both table and map based on current page
+        function updateTableAndMap() {
+            updateTable();
+            updateMap();
+            updatePaginationControls();
+        }
+
+        // Update the data table
+        function updateTable() {
+            const table = document.getElementById('table');
+            const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIdx = startIdx + ITEMS_PER_PAGE;
+            const pageData = allData.slice(startIdx, endIdx);
+
+            // Clear existing rows (except header)
+            const rows = document.querySelectorAll('.table-row:not(.table-header)');
+            rows.forEach(row => row.remove());
+            
+            // Add new rows
+            pageData.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <div>${item.City}</div>
+                    <div>${item.State}</div>
+                    <div>${item.Technology || 'N/A'}</div>
+                    <div>${item.Vendor || 'N/A'}</div>
+                    <div>${item['Link 1 Date'] || 'N/A'}</div>
+                `;
+                table.appendChild(row);
+            });
+
+            // Update pagination info
+            document.getElementById('start-item').textContent = startIdx + 1;
+            document.getElementById('end-item').textContent = Math.min(endIdx, allData.length);
+        }
+
+        // Update the map with clustered markers
+        function updateMap() {
+            // Clear existing markers
+            markersCluster.clearLayers();
+
+            const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIdx = startIdx + ITEMS_PER_PAGE;
+            const pageData = allData.slice(startIdx, endIdx);
+
+            // If we have more than MAX_MAP_MARKERS, sample randomly
+            const displayData = pageData.length > MAX_MAP_MARKERS 
+                ? getRandomSubset(pageData, MAX_MAP_MARKERS) 
+                : pageData;
+
+            // Add markers to cluster group
+            displayData.forEach(item => {
+                addMarkerToMap(item);
+            });
+        }
+
+        // Get random subset of array
+        function getRandomSubset(array, size) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled.slice(0, size);
+        }
+
+        // Update pagination controls state
+        function updatePaginationControls() {
+            const totalPages = Math.ceil(allData.length / ITEMS_PER_PAGE);
+            document.getElementById('prev-page').disabled = currentPage <= 1;
+            document.getElementById('next-page').disabled = currentPage >= totalPages;
+        }
+
+        // Add marker with geocoding
+        async function addMarkerToMap(item) {
+            try {
+                const coords = await geocodeLocation(item.City, item.State);
+                if (coords.lat && coords.lng) {
+                    const marker = L.marker([coords.lat, coords.lng]);
+                    marker.bindPopup(createPopupContent(item));
+                    markersCluster.addLayer(marker);
+                }
+            } catch (error) {
+                console.error('Error geocoding:', item.City, item.State, error);
+            }
+        }
+
+        // Create popup content
+        function createPopupContent(item) {
+            return `
+                <div class="popup-content">
+                    <h3>${item.City}, ${item.State}</h3>
+                    <p><strong>Agency:</strong> ${item.Agency || 'N/A'}</p>
+                    <p><strong>Technology:</strong> ${item.Technology || 'N/A'}</p>
+                    <p><strong>Vendor:</strong> ${item.Vendor || 'N/A'}</p>
+                    <p><strong>Date:</strong> ${item['Link 1 Date'] || 'N/A'}</p>
+                    ${item['Link 1'] ? `<a href="${item['Link 1']}" target="_blank" class="popup-link">Source Article</a>` : ''}
+                </div>
+            `;
+        }
+
+        // Geocode location using Nominatim
+        async function geocodeLocation(city, state) {
+            try {
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(city)}&state=${encodeURIComponent(state)}&country=US&format=json`
+                );
+                
+                if (!response.ok) throw new Error('Geocoding failed');
+                
+                const data = await response.json();
+                if (data.length > 0) {
+                    return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+                }
+                throw new Error('No results found');
+            } catch (error) {
+                console.error('Geocoding error:', error);
+                // Fallback to random nearby coordinates if geocoding fails
+                return getFallbackCoords();
+            }
+        }
+
+        // Fallback coordinates (random near US center)
+        function getFallbackCoords() {
+            return {
+                lat: 37.8 + (Math.random() - 0.5) * 10,
+                lng: -96 + (Math.random() - 0.5) * 10
+            };
+        }
+
+        // Initial state
+        document.getElementById('loading').style.display = 'none';
+    </script>
+</body>
+</html>
