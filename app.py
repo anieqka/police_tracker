@@ -1,60 +1,122 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, render_template, jsonify, request, send_from_directory
+import sqlite3
 import os
-from werkzeug.utils import secure_filename
-import csv
-import json
+import pandas as pd
+from pathlib import Path
 
-app = Flask(__name__)
+# Initialize Flask app
+app = Flask(__name__,
+            template_folder='templates',
+            static_folder='static')
 
-# Configuration
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'csv'}
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB limit
+# Database connection helper
+def get_db_connection():
+    conn = sqlite3.connect('data/surveillance.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
-# Ensure upload directory exists
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
-
-@app.route('/')
-def index():
-    return render_template('index.html')
+# API Endpoints
+@app.route('/api/comparison')
+def comparison_data():
+    conn = get_db_connection()
+    
+    # Get Atlas data
+    atlas_data = conn.execute('SELECT technology, COUNT(*) as count FROM atlas_data GROUP BY technology').fetchall()
+    
+    # Get Border data
+    border_data = conn.execute('SELECT technology, COUNT(*) as count FROM border_data GROUP BY technology').fetchall()
+    
+    conn.close()
+    
+    return jsonify({
+        'tech_distribution': {
+            'atlas': {row['technology']: row['count'] for row in atlas_data},
+            'border': {row['technology']: row['count'] for row in border_data}
+        },
+        'total_agencies': {
+            'atlas': sum(row['count'] for row in atlas_data),
+            'border': sum(row['count'] for row in border_data)
+        }
+    })
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
-        return redirect(request.url)
+        return jsonify({'error': 'No file uploaded'}), 400
     
     file = request.files['file']
     if file.filename == '':
-        return redirect(request.url)
+        return jsonify({'error': 'No selected file'}), 400
     
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-        
-        # Process CSV and return data
-        data = []
-        with open(filepath, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                if row.get('City') and row.get('State'):
-                    data.append(row)
-        
-        return json.dumps({
-            'filename': filename,
-            'data': data[:50],  # Just return first 50 for demo
+    try:
+        # Read CSV file
+        df = pd.read_csv(file)
+        # Convert to list of dictionaries for JSON response
+        data = df.to_dict('records')
+        return jsonify({
+            'filename': file.filename,
+            'data': data,
             'total': len(data)
         })
-    
-    return json.dumps({'error': 'Invalid file'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+# Main Page Routes
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/data')
+def data_page():
+    return render_template('data.html')
+
+# Static File Handling
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return send_from_directory(app.static_folder, filename)
+
+# Error Handlers
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+# Startup Configuration
+def initialize_app():
+    # Create required directories
+    Path('data').mkdir(exist_ok=True)
+    Path('uploads').mkdir(exist_ok=True)
+    
+    # Initialize database if not exists
+    if not os.path.exists('data/surveillance.db'):
+        init_db()
+
+def init_db():
+    conn = sqlite3.connect('data/surveillance.db')
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS atlas_data (
+            id INTEGER PRIMARY KEY,
+            city TEXT,
+            state TEXT,
+            technology TEXT,
+            vendor TEXT
+        )
+    ''')
+    
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS border_data (
+            id INTEGER PRIMARY KEY,
+            city TEXT,
+            state TEXT,
+            technology TEXT,
+            vendor TEXT
+        )
+    ''')
+    
+    conn.commit()
+    conn.close()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    initialize_app()
+    app.run(host='0.0.0.0', port=8000, debug=True)

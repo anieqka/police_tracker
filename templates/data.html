@@ -1,0 +1,1196 @@
+{% extends "base.html" %}
+
+{% block title %}DATA WARS | POLICE TECH ATLAS{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+    /* NEW GIRLY RETRO COLOR PALETTE */
+    :root {
+        --primary-pink: #ff6bb4;
+        --secondary-pink: #ff8cc3;
+        --light-pink: #ffcce6;
+        --dark-pink: #d94d8c;
+        --text-pink: #ffe6f2;
+        --dark-bg: #1a0022;
+        --neon-blue: #00d9ff;
+        --accent-purple: #9966ff;
+    }
+
+    body {
+        background-color: var(--dark-bg);
+        background-image: 
+            linear-gradient(rgba(255, 107, 180, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 107, 180, 0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+        color: var(--text-pink);
+        font-family: 'DotGothic16', sans-serif;
+        margin: 0;
+        padding: 0;
+        transition: all 0.3s ease;
+    }
+
+    /* IMPROVED NAVIGATION WITH BETTER UX */
+    .navbar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px 0;
+        background: rgba(26, 0, 34, 0.8);
+        border-bottom: 2px solid var(--primary-pink);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(255, 107, 180, 0.3);
+    }
+
+    .navbar a {
+        color: var(--text-pink);
+        font-family: 'DotGothic16', sans-serif;
+        text-decoration: none;
+        margin: 0 15px;
+        padding: 8px 15px;
+        position: relative;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        border-radius: 4px;
+    }
+
+    .navbar a::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background: var(--primary-pink);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .navbar a:hover, .navbar a.active {
+        color: var(--light-pink);
+        background-color: rgba(255, 107, 180, 0.2);
+        text-shadow: 0 0 5px var(--primary-pink);
+    }
+
+    .navbar a:hover::before, .navbar a.active::before {
+        transform: scaleX(1);
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        position: relative;
+    }
+
+    /* IMPROVED SCANLINE EFFECT FOR BETTER VISIBILITY */
+    .container::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+            rgba(255, 107, 180, 0.03) 1px, 
+            transparent 1px
+        );
+        background-size: 100% 3px;
+        pointer-events: none;
+        z-index: 9999;
+        animation: scanline 8s linear infinite;
+        opacity: 0.7;
+    }
+
+    @keyframes scanline {
+        0% { transform: translateY(0%); }
+        100% { transform: translateY(100%); }
+    }
+
+    /* GLITCH HEADER WITH IMPROVED READABILITY */
+    .data-header {
+        text-align: center;
+        margin: 2rem 0 4rem;
+        position: relative;
+        background: var(--dark-bg);
+        border: 4px solid var(--primary-pink);
+        padding: 2rem;
+        box-shadow: 
+            0 0 10px var(--primary-pink),
+            0 0 20px var(--secondary-pink),
+            inset 0 0 10px var(--primary-pink);
+        text-transform: uppercase;
+        border-radius: 8px;
+    }
+
+    .data-header h1 {
+        font-family: 'Press Start 2P', cursive;
+        color: var(--primary-pink);
+        text-shadow: 
+            3px 3px 0 var(--dark-pink),
+            6px 6px 0 rgba(0, 0, 0, 0.3);
+        font-size: 2.8rem;
+        margin: 0;
+        letter-spacing: -1px;
+        position: relative;
+        animation: glitch 5s infinite alternate;
+    }
+
+    @keyframes glitch {
+        0%, 100% { transform: translate(0); }
+        20% { transform: translate(-2px, 2px); color: var(--secondary-pink); }
+        40% { transform: translate(-2px, -2px); }
+        60% { transform: translate(2px, 2px); color: var(--primary-pink); }
+        80% { transform: translate(2px, -2px); }
+    }
+
+    .data-subtitle {
+        font-family: 'DotGothic16', sans-serif;
+        color: var(--neon-blue);
+        font-size: 1.5rem;
+        margin: 1rem 0 0;
+        text-shadow: 0 0 5px var(--neon-blue);
+        letter-spacing: 3px;
+    }
+
+    /* IMPROVED CARD LAYOUT WITH BETTER SPACING */
+    .comparison-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin: 3rem 0;
+    }
+
+    .dataset-card {
+        background: rgba(26, 0, 34, 0.8);
+        border: 3px solid var(--primary-pink);
+        padding: 2rem;
+        position: relative;
+        box-shadow: 
+            0 0 15px var(--primary-pink),
+            inset 0 0 10px var(--secondary-pink);
+        transition: all 0.3s;
+        border-radius: 8px;
+    }
+
+    .dataset-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 
+            0 5px 25px var(--primary-pink),
+            inset 0 0 15px var(--secondary-pink);
+    }
+
+    .dataset-card h2 {
+        font-family: 'Press Start 2P', cursive;
+        color: var(--primary-pink);
+        font-size: 1.4rem;
+        margin: 0 0 1.5rem;
+        text-shadow: 2px 2px 0 var(--dark-pink);
+        border-bottom: 3px dotted var(--neon-blue);
+        padding-bottom: 1rem;
+    }
+
+    /* IMPROVED STATS GRID WITH BETTER VISUAL HIERARCHY */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .stat-item {
+        background: rgba(26, 0, 34, 0.7);
+        padding: 1.2rem;
+        border-left: 4px solid var(--neon-blue);
+        box-shadow: 
+            inset 0 0 10px rgba(0, 217, 255, 0.2),
+            0 0 5px rgba(0, 217, 255, 0.3);
+        border-radius: 4px;
+        transition: all 0.3s;
+    }
+
+    .stat-item:hover {
+        background: rgba(26, 0, 34, 0.9);
+        transform: translateY(-3px);
+        box-shadow: 
+            inset 0 0 15px rgba(0, 217, 255, 0.3),
+            0 5px 10px rgba(0, 217, 255, 0.2);
+    }
+
+    .stat-value {
+        font-family: 'Press Start 2P', cursive;
+        color: var(--primary-pink);
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 0 var(--dark-pink);
+        display: block;
+    }
+
+    .stat-label {
+        font-family: 'DotGothic16', sans-serif;
+        color: var(--neon-blue);
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+    }
+
+    /* IMPROVED TECH BADGES WITH BETTER CONTRAST */
+    .tech-badge {
+        display: inline-block;
+        background: rgba(26, 0, 34, 0.9);
+        color: var(--text-pink);
+        font-family: 'DotGothic16', sans-serif;
+        padding: 0.5rem 1rem;
+        margin: 0.5rem 0.5rem 0.5rem 0;
+        font-size: 0.9rem;
+        border: 2px solid var(--primary-pink);
+        box-shadow: 
+            2px 2px 0 var(--dark-pink),
+            inset 0 0 5px var(--secondary-pink);
+        position: relative;
+        overflow: hidden;
+        border-radius: 4px;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .tech-badge:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 107, 180, 0.2);
+        color: var(--light-pink);
+    }
+
+    .tech-badge::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        right: -50%;
+        bottom: -50%;
+        background: linear-gradient(
+            to bottom right,
+            transparent 45%,
+            rgba(255, 107, 180, 0.3) 50%,
+            transparent 55%
+        );
+        transform: rotate(30deg);
+        animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+        0% { transform: translateX(-100%) rotate(30deg); }
+        100% { transform: translateX(100%) rotate(30deg); }
+    }
+
+    /* IMPROVED CHART CONTAINERS */
+    .chart-container {
+        background: rgba(26, 0, 34, 0.8);
+        padding: 2rem;
+        margin: 3rem 0;
+        border: 3px solid var(--primary-pink);
+        box-shadow: 
+            0 0 15px var(--primary-pink),
+            inset 0 0 10px var(--secondary-pink);
+        position: relative;
+        border-radius: 8px;
+    }
+
+    .chart-container::before {
+        content: "";
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        border: 1px dashed var(--neon-blue);
+        pointer-events: none;
+        border-radius: 5px;
+    }
+
+    .chart-title {
+        font-family: 'Press Start 2P', cursive;
+        color: var(--primary-pink);
+        text-align: center;
+        margin-bottom: 2rem;
+        text-shadow: 2px 2px 0 var(--dark-pink);
+        font-size: 1.4rem;
+        letter-spacing: -1px;
+    }
+
+    /* IMPROVED DATA TABLE WITH BETTER READABILITY */
+    .data-table {
+        width: 100%;
+        font-family: 'DotGothic16', sans-serif;
+        color: var(--text-pink);
+        border-collapse: separate;
+        border-spacing: 0;
+        border: 3px solid var(--primary-pink);
+        margin-top: 1.5rem;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .data-table th {
+        background: rgba(255, 107, 180, 0.3);
+        padding: 1rem;
+        border: 1px solid var(--primary-pink);
+        text-align: left;
+        font-size: 1.1rem;
+        color: var(--light-pink);
+        text-shadow: 0 0 5px var(--primary-pink);
+    }
+
+    .data-table td {
+        padding: 1rem;
+        border: 1px solid var(--secondary-pink);
+        background: rgba(26, 0, 34, 0.7);
+        transition: background 0.3s;
+    }
+
+    .data-table tr:hover td {
+        background: rgba(255, 107, 180, 0.1);
+    }
+
+    .data-table tr:nth-child(even) td {
+        background: rgba(26, 0, 34, 0.9);
+    }
+
+    .data-table tr:nth-child(even):hover td {
+        background: rgba(255, 107, 180, 0.1);
+    }
+
+    /* LOADING EFFECTS */
+    @keyframes battleFlash {
+        0% { 
+            box-shadow: 0 0 10px var(--primary-pink);
+            background: rgba(26, 0, 34, 0.8);
+        }
+        50% { 
+            box-shadow: 0 0 30px var(--neon-blue);
+            background: rgba(0, 20, 40, 0.8);
+        }
+        100% { 
+            box-shadow: 0 0 10px var(--primary-pink);
+            background: rgba(26, 0, 34, 0.8);
+        }
+    }
+
+    .battle-highlight {
+        animation: battleFlash 0.5s 3;
+    }
+
+    /* IMPROVED BUTTON STYLES */
+    .pixel-button {
+        background: var(--dark-bg);
+        color: var(--primary-pink);
+        border: 2px solid var(--primary-pink);
+        font-family: 'Press Start 2P', cursive;
+        padding: 8px 15px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin: 1rem 0;
+        transition: all 0.2s;
+        box-shadow: 3px 3px 0 var(--dark-pink);
+        position: relative;
+        overflow: hidden;
+        border-radius: 4px;
+    }
+
+    .pixel-button:hover {
+        background: rgba(255, 107, 180, 0.2);
+        color: var(--light-pink);
+        transform: translateY(-2px);
+        box-shadow: 5px 5px 0 var(--dark-pink);
+    }
+
+    .pixel-button:active {
+        transform: translateY(0);
+        box-shadow: 1px 1px 0 var(--dark-pink);
+    }
+
+    /* TOOLTIP STYLES */
+    .tooltip {
+        position: relative;
+        display: inline-block;
+    }
+
+    .tooltip .tooltip-text {
+        visibility: hidden;
+        width: 200px;
+        background-color: rgba(26, 0, 34, 0.95);
+        color: var(--light-pink);
+        text-align: center;
+        border-radius: 4px;
+        padding: 10px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -100px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        border: 2px solid var(--primary-pink);
+        box-shadow: 0 0 10px var(--primary-pink);
+        font-size: 0.9rem;
+    }
+
+    .tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    /* HELP BUTTON */
+    .help-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background: var(--primary-pink);
+        color: var(--dark-bg);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 1.5rem;
+        box-shadow: 0 0 15px var(--primary-pink);
+        cursor: pointer;
+        z-index: 1000;
+        transition: all 0.3s;
+        border: 2px solid var(--light-pink);
+    }
+
+    .help-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px var(--primary-pink);
+    }
+
+    /* MODAL STYLES */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(26, 0, 34, 0.8);
+        z-index: 2000;
+        overflow: auto;
+    }
+
+    .modal-content {
+        background: var(--dark-bg);
+        margin: 10% auto;
+        padding: 2rem;
+        width: 80%;
+        max-width: 700px;
+        border: 3px solid var(--primary-pink);
+        box-shadow: 
+            0 0 15px var(--primary-pink),
+            inset 0 0 10px var(--secondary-pink);
+        position: relative;
+        border-radius: 8px;
+        color: var(--text-pink);
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 2rem;
+        color: var(--primary-pink);
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .close-modal:hover {
+        color: var(--light-pink);
+        transform: rotate(90deg);
+    }
+    
+    /* LOADING INDICATOR */
+    .loading-bar {
+        width: 100%;
+        height: 10px;
+        background: var(--dark-bg);
+        border: 2px solid var(--primary-pink);
+        position: relative;
+        margin: 2rem 0;
+        overflow: hidden;
+        border-radius: 5px;
+    }
+
+    .loading-bar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, 
+            transparent, 
+            var(--primary-pink), 
+            transparent);
+        animation: loading 2s infinite linear;
+    }
+
+    @keyframes loading {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    /* RESPONSIVE IMPROVEMENTS */
+    @media (max-width: 768px) {
+        .comparison-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .data-header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .navbar {
+            flex-direction: column;
+            padding: 10px 0;
+        }
+        
+        .navbar a {
+            margin: 5px 0;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .modal-content {
+            width: 95%;
+            margin: 5% auto;
+        }
+    }
+    
+    /* DARK MODE TOGGLE */
+    .mode-toggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        cursor: pointer;
+        background: var(--dark-bg);
+        border: 2px solid var(--primary-pink);
+        color: var(--primary-pink);
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-family: 'DotGothic16', sans-serif;
+        font-size: 0.8rem;
+        transition: all 0.3s;
+    }
+    
+    .mode-toggle:hover {
+        background: rgba(255, 107, 180, 0.2);
+        transform: translateY(-2px);
+    }
+    
+    /* PAGINATION */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin: 2rem 0;
+    }
+    
+    .page-button {
+        margin: 0 5px;
+        padding: 5px 12px;
+        background: var(--dark-bg);
+        border: 2px solid var(--primary-pink);
+        color: var(--primary-pink);
+        font-family: 'Press Start 2P', cursive;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-radius: 4px;
+    }
+    
+    .page-button.active {
+        background: var(--primary-pink);
+        color: var(--dark-bg);
+    }
+    
+    .page-button:hover:not(.active) {
+        background: rgba(255, 107, 180, 0.2);
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar">
+        <a href="#" class="active">DATA WARS</a>
+        <a href="#">SURVEILLANCE</a>
+        <a href="#">NETWORKS</a>
+        <a href="#">ABOUT</a>
+    </nav>
+
+    <!-- MODE TOGGLE -->
+    <div class="mode-toggle" id="modeToggle">SOFTEN VISUALS</div>
+    
+    <!-- CYBERPUNK GLITCH HEADER -->
+    <header class="data-header">
+        <h1>DATA WARS</h1>
+        <p class="data-subtitle">
+            SYSTEMS ENGAGED
+        </p>
+    </header>
+    
+    <!-- LOADING BAR -->
+    <div class="loading-bar"></div>
+    
+    <!-- DATASET COMPARISON GRID -->
+    <div class="comparison-grid">
+        <!-- ATLAS CARD -->
+        <div class="dataset-card" id="atlas-card">
+            <h2>ATLAS NETWORK</h2>
+            <p class="data-subtitle">
+                SURVEILLANCE GRID STATUS
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-item tooltip">
+                    <span class="stat-value" id="atlas-agencies">5,200+</span>
+                    <span class="stat-label">NODES ONLINE</span>
+                    <span class="tooltip-text">Active surveillance nodes in the ATLAS network</span>
+                </div>
+                <div class="stat-item tooltip">
+                    <span class="stat-value" id="atlas-states">48</span>
+                    <span class="stat-label">SECTORS</span>
+                    <span class="tooltip-text">Geographic sectors covered by the network</span>
+                </div>
+                <div class="stat-item tooltip">
+                    <span class="stat-value" id="atlas-tech">22</span>
+                    <span class="stat-label">MODULE TYPES</span>
+                    <span class="tooltip-text">Different surveillance technologies deployed</span>
+                </div>
+                <div class="stat-item tooltip">
+                    <span class="stat-value" id="atlas-year">2010</span>
+                    <span class="stat-label">INITIAL DEPLOY</span>
+                    <span class="tooltip-text">Year when the network was first activated</span>
+                </div>
+            </div>
+            
+            <h3 class="data-subtitle">
+                PRIMARY SYSTEMS:
+            </h3>
+            <div id="atlas-tech-badges">
+                <span class="tech-badge tooltip">VISUAL CAPTURE (65%)
+                    <span class="tooltip-text">Camera-based surveillance systems</span>
+                </span>
+                <span class="tech-badge tooltip">AUTO SCAN (45%)
+                    <span class="tooltip-text">Automated recognition and scanning</span>
+                </span>
+                <span class="tech-badge tooltip">AUDIO TRACK (28%)
+                    <span class="tooltip-text">Sound monitoring and analysis</span>
+                </span>
+            </div>
+            
+            <button class="pixel-button" id="atlas-detail-btn">VIEW DETAILS</button>
+        </div>
+        
+        <!-- BORDER CARD -->
+        <div class="dataset-card" id="border-card">
+            <h2>BORDER PROTOCOL</h2>
+            <p class="data-subtitle">
+                SECURITY GRID STATUS
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-item tooltip">
+                    <span class="stat-value" id="border-agencies">87</span>
+                    <span class="stat-label">NODES ONLINE</span>
+                    <span class="tooltip-text">Active surveillance nodes at border locations</span>
+                </div>
+                <div class="stat-item tooltip">
+                    <span class="stat-value" id="border-states">4</span>
+                    <span class="stat-label">SECTORS</span>
+                    <span class="tooltip-text">Border regions covered by the network</span>
+                </div>
+                <div class="stat-item tooltip">
+                    <span class="stat-value" id="border-tech">14</span>
+                    <span class="stat-label">MODULE TYPES</span>
+                    <span class="tooltip-text">Different surveillance technologies deployed</span>
+                </div>
+                <div class="stat-item tooltip">
+                    <span class="stat-value" id="border-year">2014</span>
+                    <span class="stat-label">INITIAL DEPLOY</span>
+                    <span class="tooltip-text">Year when the border protocol was activated</span>
+                </div>
+            </div>
+            
+            <h3 class="data-subtitle">
+                PRIMARY SYSTEMS:
+            </h3>
+            <div id="border-tech-badges">
+                <span class="tech-badge tooltip">AERIAL SCAN (45%)
+                    <span class="tooltip-text">Drone and aerial surveillance</span>
+                </span>
+                <span class="tech-badge tooltip">VIS NETWORK (38%)
+                    <span class="tooltip-text">Visual monitoring network</span>
+                </span>
+                <span class="tech-badge tooltip">SIGNAL TRAP (22%)
+                    <span class="tooltip-text">Communications and signal monitoring</span>
+                </span>
+            </div>
+            
+            <button class="pixel-button" id="border-detail-btn">VIEW DETAILS</button>
+        </div>
+    </div>
+    
+    <!-- TECH COMPARISON CHART -->
+    <div class="chart-container">
+        <h2 class="chart-title">
+            SYSTEM PREVALENCE ANALYSIS
+        </h2>
+        <canvas id="techChart" height="300"></canvas>
+    </div>
+    
+    <!-- TIMELINE CHART -->
+    <div class="chart-container">
+        <h2 class="chart-title">
+            DEPLOYMENT TIMELINE
+        </h2>
+        <canvas id="timelineChart" height="300"></canvas>
+    </div>
+    
+    <!-- DATA TABLE -->
+    <div class="chart-container">
+        <h2 class="chart-title">
+            RAW DATA STREAM
+        </h2>
+        <div style="overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>METRIC</th>
+                        <th>ATLAS</th>
+                        <th>BORDER</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AVG MODULES/NODE</td>
+                        <td id="avg-tech-atlas">2.1</td>
+                        <td id="avg-tech-border">3.8</td>
+                    </tr>
+                    <tr>
+                        <td>FEDERAL RESOURCE %</td>
+                        <td id="funding-atlas">12%</td>
+                        <td id="funding-border">68%</td>
+                    </tr>
+                    <tr>
+                        <td>PRIMARY VENDOR</td>
+                        <td id="vendor-atlas">AXON SYSTEMS</td>
+                        <td id="vendor-border">LOCKHEED SEC</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- PAGINATION EXAMPLE -->
+        <div class="pagination">
+            <button class="page-button active">1</button>
+            <button class="page-button">2</button>
+            <button class="page-button">3</button>
+            <button class="page-button">></button>
+        </div>
+    </div>
+    
+    <!-- HELP BUTTON -->
+    <div class="help-button" id="helpBtn">?</div>
+    
+    <!-- HELP MODAL -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">×</span>
+            <h2 style="font-family: 'Press Start 2P', cursive; color: var(--primary-pink);">DATA WARS: USER GUIDE</h2>
+            <p>This interface provides analysis of surveillance technologies used by different agencies.</p>
+            <p>Navigation:</p>
+            <ul>
+                <li>Hover over stats and badges for more information</li>
+                <li>Click on chart elements to see detailed data</li>
+                <li>Use the View Details buttons for in-depth analysis</li>
+            </ul>
+            <p>The data is sourced from our relational database of surveillance technologies documented across agencies.</p>
+            <button class="pixel-button" id="closeModalBtn">GOT IT</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script>
+    // CYBERPUNK DATA VISUALIZATION
+    document.addEventListener('DOMContentLoaded', function() {
+        // ELEMENTS
+        const cards = [document.getElementById('atlas-card'), document.getElementById('border-card')];
+        const helpBtn = document.getElementById('helpBtn');
+        const helpModal = document.getElementById('helpModal');
+        const closeModal = document.getElementById('closeModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modeToggle = document.getElementById('modeToggle');
+        
+        // MODAL FUNCTIONALITY
+        helpBtn.addEventListener('click', function() {
+            helpModal.style.display = 'block';
+        });
+        
+        closeModal.addEventListener('click', function() {
+            helpModal.style.display = 'none';
+        });
+        
+        closeModalBtn.addEventListener('click', function() {
+            helpModal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', function(event) {
+            if (event.target === helpModal) {
+                helpModal.style.display = 'none';
+            }
+        });
+        
+        // VISUAL MODE TOGGLE
+        let softMode = false;
+        modeToggle.addEventListener('click', function() {
+            softMode = !softMode;
+            document.body.style.transition = 'all 0.5s ease';
+            
+            if (softMode) {
+                document.documentElement.style.setProperty('--primary-pink', '#ff8cc3');
+                document.documentElement.style.setProperty('--secondary-pink', '#ffadd6');
+                document.documentElement.style.setProperty('--dark-bg', '#2a0a33');
+                document.querySelector('.container::before').style.opacity = '0.3';
+                modeToggle.textContent = 'RETRO MODE';
+            } else {
+                document.documentElement.style.setProperty('--primary-pink', '#ff6bb4');
+                document.documentElement.style.setProperty('--secondary-pink', '#ff8cc3');
+                document.documentElement.style.setProperty('--dark-bg', '#1a0022');
+                document.querySelector('.container::before').style.opacity = '0.7';
+                modeToggle.textContent = 'SOFTEN VISUALS';
+            }
+        });
+        
+        // GLITCH EFFECT ON LOAD
+        setTimeout(() => {
+            cards.forEach((card, i) => {
+                setTimeout(() => {
+                    card.classList.add('battle-highlight');
+                    setTimeout(() => {
+                        card.classList.remove('battle-highlight');
+                    }, 1500);
+                }, i * 300);
+            });
+        }, 1000);
+
+        // DETAIL BUTTONS
+        document.getElementById('atlas-detail-btn').addEventListener('click', function() {
+            // Simulate loading
+            this.textContent = 'LOADING...';
+            setTimeout(() => {
+                this.textContent = 'VIEW DETAILS';
+                alert('ATLAS network details would display here');
+            }, 800);
+        });
+        
+        document.getElementById('border-detail-btn').addEventListener('click', function() {
+            // Simulate loading
+            this.textContent = 'LOADING...';
+            setTimeout(() => {
+                this.textContent = 'VIEW DETAILS';
+                alert('BORDER protocol details would display here');
+            }, 800);
+        });
+
+        // PAGINATION BUTTONS
+        const pageButtons = document.querySelectorAll('.page-button');
+        pageButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                pageButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                // Here you would fetch new data from your relational database
+            });
+        });
+
+        // CREATE CHART WITH NEW COLOR SCHEME
+        const chartColors = {
+            pink: 'rgba(255, 107, 180, 0.8)',
+            lightPink: 'rgba(255, 140, 195, 0.8)',
+            neonBlue: 'rgba(0, 217, 255, 0.8)',
+            purple: 'rgba(153, 102, 255, 0.8)'
+        };
+
+        // TECH CHART
+        const techCtx = document.getElementById('techChart').getContext('2d');
+        const techChart = new Chart(techCtx, {
+            type: 'bar',
+            data: {
+                labels: ['VIS CAP', 'DRONE', 'AUTO SCAN', 'AUD TRK', 'SIG TRP'],
+                datasets: [
+                    {
+                        label: 'ATLAS',
+                        data: [65, 12, 45, 28, 15],
+                        backgroundColor: chartColors.pink,
+                        borderColor: '#fff',
+                        borderWidth: 1,
+                        borderRadius: 3
+                    },
+                    {
+                        label: 'BORDER',
+                        data: [30, 45, 25, 15, 22],
+                        backgroundColor: chartColors.neonBlue,
+                        borderColor: '#fff',
+                        borderWidth: 1,
+                        borderRadius: 3
+                    }
+                ]
+            },
+            options: getChartOptions('MODULE DEPLOYMENT (%)')
+        });
+
+        // TIMELINE CHART
+        const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+        const timelineChart = new Chart(timelineCtx, {
+            type: 'line',
+            data: {
+                labels: ['2010', '2012', '2014', '2016', '2018', '2020', '2022'],
+                datasets: [
+                    {
+                        label: 'ATLAS',
+                        data: [120, 350, 800, 1500, 2800, 4200, 5200],
+                        borderColor: chartColors.pink,
+                        backgroundColor: 'rgba(255, 107, 180, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: chartColors.pink,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    },
+                    {
+                        label: 'BORDER',
+                        data: [0, 5, 15, 40, 60, 80, 87],
+                        borderColor: chartColors.neonBlue,
+                        backgroundColor: 'rgba(0, 217, 255, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: chartColors.neonBlue,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }
+                ]
+            },
+            options: getChartOptions('NODES ONLINE')
+        });
+
+        // CHART CONFIG WITH IMPROVED UX
+        function getChartOptions(title) {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                family: "'Press Start 2P', cursive",
+                                size: 10
+                            },
+                            color: chartColors.neonBlue,
+                            padding: 15
+                        },
+                        onClick: function(e, legendItem, legend) {
+                            const index = legendItem.datasetIndex;
+                            const ci = legend.chart;
+                            const meta = ci.getDatasetMeta(index);
+                            
+                            // Toggle visibility
+                            meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
+                            
+                            // Flash effect on change
+                            if (index === 0) {
+                                document.getElementById('atlas-card').classList.add('battle-highlight');
+                                setTimeout(() => {
+                                    document.getElementById('atlas-card').classList.remove('battle-highlight');
+                                }, 1500);
+                            } else {
+                                document.getElementById('border-card').classList.add('battle-highlight');
+                                setTimeout(() => {
+                                    document.getElementById('border-card').classList.remove('battle-highlight');
+                                }, 1500);
+                            }
+                            
+                            ci.update();
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: title,
+                        font: {
+                            family: "'Press Start 2P', cursive",
+                            size: 12
+                        },
+                        color: chartColors.pink,
+                        padding: {
+                            top: 10,
+                            bottom: 20
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        titleFont: {
+                            family: "'DotGothic16', sans-serif",
+                            size: 12
+                        },
+                        bodyFont: {
+                            family: "'DotGothic16', sans-serif",
+                            size: 12
+                        },
+                        backgroundColor: 'rgba(26, 0, 34, 0.9)',
+                        titleColor: chartColors.pink,
+                        bodyColor: chartColors.lightPink,
+                        borderColor: chartColors.pink,
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: true,
+                        cornerRadius: 4,
+                        caretSize: 10,
+                        // Make tooltip more interactive
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.parsed.y;
+                                return label;
+                            },
+                            afterLabel: function(context) {
+                                // Add extra information for the tooltip
+                                const datasetLabel = context.dataset.label;
+                                if (datasetLabel === 'ATLAS') {
+                                    return 'ATLAS network module prevalence';
+                                } else {
+                                    return 'BORDER protocol module prevalence';
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 107, 180, 0.1)',
+                            lineWidth: 1
+                        },
+                        ticks: {
+                            color: chartColors.lightPink,
+                            font: {
+                                family: "'DotGothic16', sans-serif",
+                                size: 10
+                            },
+                            padding: 10
+                        },
+                        border: {
+                            color: 'rgba(255, 107, 180, 0.3)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 107, 180, 0.1)',
+                            lineWidth: 1
+                        },
+                        ticks: {
+                            color: chartColors.lightPink,
+                            font: {
+                                family: "'DotGothic16', sans-serif",
+                                size: 10
+                            },
+                            padding: 10
+                        },
+                        border: {
+                            color: 'rgba(255, 107, 180, 0.3)'
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart'
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true,
+                    animationDuration: 400
+                },
+                onClick: function(e, elements) {
+                    if (elements.length > 0) {
+                        const element = elements[0];
+                        const dataset = this.data.datasets[element.datasetIndex];
+                        const datapoint = dataset.data[element.index];
+                        
+                        alert(`Selected: ${dataset.label} - ${this.data.labels[element.index]}: ${datapoint}`);
+                    }
+                }
+            };
+        }
+
+        // DYNAMIC DATA UPDATES (SIMULATING DATABASE CONNECTION)
+        function updateData() {
+            // Simulate fetching new data from database
+            const atlasAgencies = Math.floor(5200 + (Math.random() * 100 - 50));
+            const borderAgencies = Math.floor(87 + (Math.random() * 6 - 3));
+            
+            // Update DOM with new values
+            document.getElementById('atlas-agencies').textContent = atlasAgencies.toLocaleString();
+            document.getElementById('border-agencies').textContent = borderAgencies;
+            
+            // Animate changes
+            document.getElementById('atlas-agencies').parentElement.classList.add('battle-highlight');
+            document.getElementById('border-agencies').parentElement.classList.add('battle-highlight');
+            
+            setTimeout(() => {
+                document.getElementById('atlas-agencies').parentElement.classList.remove('battle-highlight');
+                document.getElementById('border-agencies').parentElement.classList.remove('battle-highlight');
+            }, 1000);
+            
+            // Update chart data
+            timelineChart.data.datasets[0].data[6] = atlasAgencies;
+            timelineChart.data.datasets[1].data[6] = borderAgencies;
+            timelineChart.update();
+        }
+        
+        // Simulate real-time updates from database
+        setInterval(updateData, 5000);
+        
+        // Add hover effects to table rows
+        const tableRows = document.querySelectorAll('.data-table tr');
+        tableRows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transition = 'all 0.3s';
+            });
+        });
+    });
+</script>
+{% endblock %}

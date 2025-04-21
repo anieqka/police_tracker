@@ -1,0 +1,39 @@
+-- Create database
+CREATE DATABASE surveillance_comparison;
+
+-- Connect to database
+USE surveillance_comparison;
+
+-- Main tables
+CREATE TABLE atlas_data (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    city TEXT,
+    state TEXT,
+    agency TEXT,
+    tech_type TEXT,
+    vendor TEXT,
+    year INTEGER
+);
+
+CREATE TABLE border_data (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    city TEXT,
+    state TEXT,
+    agency TEXT,
+    tech_type TEXT,
+    vendor TEXT,
+    year INTEGER
+);
+
+-- Comparison metrics
+CREATE TABLE comparison_stats (
+    metric_name TEXT PRIMARY KEY,
+    atlas_value REAL,
+    border_value REAL
+);
+
+-- Sample insert (run after Python cleaning)
+INSERT INTO comparison_stats VALUES
+    ('agencies_count', 5200, 87),
+    ('avg_tech_per_agency', 2.1, 3.8),
+    ('federal_funding_pct', 0.12, 0.68);

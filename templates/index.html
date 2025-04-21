@@ -1,3 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,39 +11,42 @@
     <title>Police Technology Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
     <style>
         :root {
-            --primary-pink: #ff69b4;
-            --secondary-pink: #ffb6c1;
-            --light-pink: #ffe4e1;
-            --dark-pink: #db7093;
+            --primary-pink: #ff6bb4;
+            --secondary-pink: #ff8cc3;
+            --light-pink: #ffcce6;
+            --dark-pink: #d94d8c;
+            --text-pink: #ffe6f2;
+            --accent-purple: #d8b4ff;
+            --accent-blue: #b4e0ff;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: var(--light-pink);
-            color: #333;
+            background-color: #000;
+            color: var(--text-pink);
             cursor: none;
             overflow-x: hidden;
             position: relative;
-            background-image: url('https://cdn.pixabay.com/photo/2023/09/13/14/22/cactus-8251095_1280.jpg');
-            background-repeat: repeat;
-            background-size: cover;
-            background-attachment: fixed;
+            background: 
+                linear-gradient(transparent 95%, rgba(255, 105, 180, 0.1) 96%),
+                linear-gradient(90deg, transparent 95%, rgba(255, 105, 180, 0.1) 96%);
+            background-size: 20px 20px;
+            background-color: #1a001a;
         }
 
         .content-wrapper {
             position: relative;
             z-index: 1;
-            background-color: var(--light-pink);
             max-width: 1200px;
             margin: 0 auto;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
 
         .container {
@@ -46,6 +54,109 @@
             margin: 0 auto;
             padding: 0 20px;
             position: relative;
+        }
+
+        /* 8-bit pixel border effect */
+        .pixel-border {
+            position: relative;
+            border: 4px solid var(--primary-pink);
+            border-image: 
+                linear-gradient(
+                    45deg,
+                    var(--primary-pink),
+                    var(--accent-purple),
+                    var(--accent-blue),
+                    var(--primary-pink)
+                ) 1;
+            animation: borderPulse 4s linear infinite;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5),
+                        inset 0 0 15px rgba(255, 105, 180, 0.3);
+        }
+
+        @keyframes borderPulse {
+            0% { border-image-source: linear-gradient(45deg, var(--primary-pink), var(--accent-purple), var(--accent-blue), var(--primary-pink)); }
+            25% { border-image-source: linear-gradient(45deg, var(--accent-purple), var(--accent-blue), var(--primary-pink), var(--accent-purple)); }
+            50% { border-image-source: linear-gradient(45deg, var(--accent-blue), var(--primary-pink), var(--accent-purple), var(--accent-blue)); }
+            75% { border-image-source: linear-gradient(45deg, var(--primary-pink), var(--accent-purple), var(--accent-blue), var(--primary-pink)); }
+            100% { border-image-source: linear-gradient(45deg, var(--accent-purple), var(--accent-blue), var(--primary-pink), var(--accent-purple)); }
+        }
+
+        .about-section {
+            background: rgba(219, 77, 140, 0.8); /* Darker pink with transparency */
+            border-radius: 0; /* Sharp corners for 8-bit look */
+            padding: 25px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-pink), var(--accent-purple), var(--accent-blue), var(--primary-pink));
+            animation: gradientMove 3s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .about-section h1, .about-section h2 {
+            color: var(--text-pink);
+            font-family: 'Press Start 2P', cursive;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 0px var(--dark-pink);
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+        }
+
+        .about-section p {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            color: var(--text-pink);
+        }
+
+        .citation-container {
+            background: rgba(255, 204, 230, 0.2); /* Lighter pink for citation */
+            padding: 1.5rem;
+            border-radius: 0;
+            margin: 20px 0;
+            border-left: 6px solid var(--accent-purple);
+            position: relative;
+        }
+
+        .citation-container::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+        }
+
+        .citation-container blockquote {
+            margin: 0;
+            padding: 0;
+            font-style: italic;
+            color: var(--text-pink);
+            font-size: 0.95rem;
+        }
+
+        .citation-container cite {
+            display: block;
+            text-align: right;
+            font-style: normal;
+            color: var(--accent-blue);
+            margin-top: 10px;
+            font-family: 'DotGothic16', sans-serif;
         }
 
         /* Flower cursor trail */
@@ -62,48 +173,91 @@
         }
 
         .navbar {
-            background-color: var(--primary-pink);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            margin-bottom: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            border-bottom: 3px solid var(--primary-pink);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
         }
 
         .navbar a {
-            color: white;
+            color: var(--text-pink);
             text-decoration: none;
-            margin: 0 1.5rem;
+            margin: 0 1rem;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
             padding: 0.5rem 1rem;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            border-radius: 0;
+            transition: all 0.3s;
+            font-family: 'DotGothic16', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
         }
 
         .navbar a:hover {
-            background-color: var(--dark-pink);
+            color: var(--accent-blue);
+            text-shadow: 0 0 5px var(--accent-purple);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .navbar a::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-purple);
+            transition: width 0.3s;
+        }
+
+        .navbar a:hover::after {
+            width: 100%;
+        }
+
+        /* Add to your existing styles */
+        .navbar a[href="./data.html"] {
             position: relative;
-            z-index: 1;
+        }
+
+        .navbar a[href="./data.html"]:hover {
+            color: #b4e0ff;
+            text-shadow: 0 0 8px #ff6bb4;
+        }
+
+        .navbar a[href="./data.html"]::after {
+            content: "NEW!";
+            position: absolute;
+            top: -10px;
+            right: -15px;
+            font-size: 0.6rem;
+            background: #ff6bb4;
+            color: black;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Press Start 2P';
         }
 
         h1 {
-            color: var(--primary-pink);
+            color: var(--text-pink);
             text-align: center;
             margin-bottom: 2rem;
+            font-family: 'Press Start 2P', cursive;
+            text-shadow: 4px 4px 0px var(--dark-pink);
+            font-size: 2rem;
         }
 
         .data-table {
-            background: white;
-            border-radius: 10px;
+            background: rgba(219, 77, 140, 0.8);
+            border-radius: 0;
             padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
             overflow-x: auto;
+            border: 3px solid var(--accent-purple);
         }
 
         .table-row {
@@ -111,53 +265,73 @@
             grid-template-columns: repeat(5, 1fr);
             gap: 1rem;
             padding: 1rem;
-            border-bottom: 1px solid var(--secondary-pink);
+            border-bottom: 2px dotted var(--accent-blue);
             align-items: center;
+            color: var(--text-pink);
+            font-family: 'DotGothic16', sans-serif;
         }
 
         .table-header {
             font-weight: 600;
-            background-color: var(--secondary-pink);
-            border-radius: 5px;
+            background-color: rgba(255, 107, 180, 0.5);
+            border-radius: 0;
             position: sticky;
             top: 0;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-pink);
+            border-bottom: 3px solid var(--accent-blue);
         }
 
         #map {
             height: 600px;
-            border-radius: 10px;
+            border-radius: 0;
             margin: 2rem 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--secondary-pink);
+            border: 3px solid var(--primary-pink);
+            box-shadow: 0 0 20px rgba(255, 107, 180, 0.3);
         }
 
         .popup-content {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'DotGothic16', sans-serif;
             min-width: 250px;
+            background: rgba(219, 77, 140, 0.9);
+            padding: 1rem;
+            color: var(--text-pink);
+            border: 2px solid var(--accent-purple);
         }
 
         .popup-content h3 {
-            color: var(--primary-pink);
+            color: var(--accent-blue);
             margin-top: 0;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            text-shadow: 2px 2px 0px var(--dark-pink);
         }
 
         .popup-link {
-            color: var(--primary-pink);
+            color: var(--accent-blue);
             text-decoration: none;
             font-weight: 600;
             display: inline-block;
             margin-top: 0.5rem;
+            border-bottom: 1px dotted var(--accent-blue);
+            transition: all 0.3s;
         }
 
         .popup-link:hover {
-            text-decoration: underline;
+            color: var(--text-pink);
+            text-shadow: 0 0 5px var(--accent-blue);
+            border-bottom: 1px solid var(--accent-blue);
         }
 
         .loading {
             text-align: center;
             padding: 2rem;
             font-size: 1.2rem;
-            color: var(--primary-pink);
+            color: var(--accent-blue);
+            font-family: 'Press Start 2P', cursive;
         }
 
         .file-upload {
@@ -170,20 +344,45 @@
             color: white;
             border: none;
             padding: 0.8rem 1.5rem;
-            border-radius: 5px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
+            border-radius: 0;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            font-weight: 400;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 4px 4px 0px var(--dark-pink);
         }
 
         .file-upload button:hover {
             background-color: var(--dark-pink);
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px var(--dark-pink);
+        }
+
+        .file-upload button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .file-upload button:hover::before {
+            left: 100%;
         }
 
         #file-info {
             margin-top: 0.5rem;
             font-size: 0.9rem;
+            color: var(--accent-blue);
+            font-family: 'DotGothic16', sans-serif;
         }
 
         .pagination {
@@ -198,46 +397,36 @@
             color: white;
             border: none;
             padding: 0.5rem 1rem;
-            border-radius: 5px;
+            border-radius: 0;
             cursor: pointer;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            box-shadow: 3px 3px 0px var(--dark-pink);
+            transition: all 0.3s;
+        }
+
+        .pagination button:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px var(--dark-pink);
         }
 
         .pagination button:disabled {
-            background-color: var(--secondary-pink);
+            background-color: var(--dark-pink);
             cursor: not-allowed;
+            opacity: 0.6;
+            transform: none;
+            box-shadow: 3px 3px 0px var(--dark-pink);
         }
 
         .pagination-info {
             text-align: center;
             margin: 1rem 0;
-            color: var(--primary-pink);
+            color: var(--accent-blue);
             font-weight: 600;
+            font-family: 'DotGothic16', sans-serif;
         } 
         
         /* Updated image container styles */
-        .image-container {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-            height: 0;
-            overflow: hidden;
-            transition: height 0.5s ease;
-        }
-
-        #cute-image {
-            max-width: 200px;
-            border-radius: 50%;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.5s ease 0.2s;
-            box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
-            z-index: 2;
-            position: relative;
-        }
-
         .image-container {
             position: relative;
             display: flex;
@@ -257,7 +446,8 @@
             box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
             z-index: 2;
             position: relative;
-            border-radius: 10px; /* Optional: Add slight rounded corners instead of circle */
+            border: 4px solid var(--accent-purple);
+            image-rendering: pixelated;
         }
 
         .image-container.active {
@@ -301,20 +491,19 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--light-pink);
-            opacity: 78%;
+            background-color: #000;
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease;
         }
 
         .loading-screen.active {
             opacity: 1;
-            pointer-events: auto;
+            pointer-events: all;
         }
 
         .loading-content {
@@ -323,10 +512,35 @@
 
         .loading-text {
             font-family: 'Press Start 2P', cursive;
-            font-size: 36px;
             color: var(--primary-pink);
-            margin-bottom: 30px;
-            text-shadow: 4px 4px 0px rgba(255, 182, 193, 0.5);
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .hearts-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .pixel-heart {
+            width: 50px;
+            height: 45px;
+            position: relative;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .pixel {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: var(--primary-pink);
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 4px 4px 0px var(--dark-pink), 0 0 5px var(--primary-pink); }
+            100% { text-shadow: 4px 4px 0px var(--dark-pink), 0 0 20px var(--accent-purple), 0 0 30px var(--primary-pink); }
         }
 
         .hearts-container {
@@ -341,6 +555,7 @@
             height: 50px;
             opacity: 0;
             transition: opacity 0.3s ease;
+            image-rendering: pixelated;
         }
 
         .pixel {
@@ -349,6 +564,44 @@
             height: 5px;
             background-color: var(--primary-pink);
             box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 8-bit grid overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 182, 193, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 182, 193, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* Retro scanlines effect */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(
+                    rgba(0, 0, 0, 0) 50%, 
+                    rgba(0, 0, 0, 0.2) 50%
+                );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 9997;
+            animation: scanline 8s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
         }
 
         @media (max-width: 768px) {
@@ -361,7 +614,7 @@
             .navbar a {
                 margin: 0 0.5rem;
                 padding: 0.5rem;
-                font-size: 0.9rem;
+                font-size: 0.8rem;
             }
 
             .loading-text {
@@ -372,10 +625,22 @@
                 width: 40px;
                 height: 40px;
             }
+
+            .about-section h1 {
+                font-size: 1.4rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Retro effects -->
+    <div class="grid-overlay"></div>
+    <div class="scanlines"></div>
+
     <!-- 8-bit style loading screen -->
     <div class="loading-screen" id="loading-screen">
         <div class="loading-content">
@@ -388,33 +653,59 @@
         </div>
     </div>
 
+
     <div class="content-wrapper">
         <div class="navbar">
             <div class="container">
                 <a href="#table">Data Table</a>
                 <a href="#map">Interactive Map</a>
+                <a href="./data.html">Data Wars</a>
             </div>
         </div>
 
         <div class="container">
+            <div class="about-section pixel-border">
+                <h1>Police Tech Atlas</h1>
+                <p>
+                    Welcome to the Police Tech Atlas, an interactive tool designed to illuminate the landscape of law enforcement technology across the United States. Inspired by the Atlas of Surveillance, this platform aims to empower journalists, researchers, and engaged citizens with clear, accessible data.
+                </p>
+                <p>
+                    Our mission is to foster transparency and understanding by visualizing complex data through user-friendly maps and tables. Here, you can explore the deployment of various surveillance technologies, understand their impact, and track their prevalence in different communities.
+                </p>
+                
+                <div class="citation-container">
+                    <blockquote>
+                        One of the primary goals of the Atlas of Surveillance is to provide journalists and researchers with the data they need to do in-depth reports on law enforcement surveillance around the country. To that end, we've made our source data available, but we've also compiled this library of data sets and data projects from other organizations that informed the Atlas of Surveillance or are useful in tandem with our research.
+                    </blockquote>
+                    <cite>Atlas of Surveillance</cite>
+                </div>
+                
+                <p>
+                    To get started, simply upload a CSV file containing relevant data. The information will be processed and displayed both in an interactive map and a detailed table. Use the map to visualize geographic patterns and the table to delve into specific details. Navigate through the data using pagination, and leverage the search features for targeted exploration.
+                </p>
+                <p>
+                    This platform is more than just a data repository; it's a tool for informed discourse and critical analysis. We believe that by making this information accessible, we can contribute to a more informed and engaged public.
+                </p>
+            </div>
+
             <h1>Police Technology Tracker</h1>
         
             <div class="file-upload">
                 <div class="image-container">
                     <div class="bubble-effect"></div>
-                    <img id="cute-image" src="https://media-hosting.imagekit.io/726cdd5ca5dc492c/your_cute_image.jpg?Expires=1838975828&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=F9aE8oApwrgJ5-P3uU5CUnqwJqj-SwoU2CHZwYC3uxJTcOaHaZ31gnuD1MYuirLfoA8IV-6XhRHkh19z3-YVuamj32Qo4rUwHbKTo9FE4R-~m3MK85D~qf21SMP3D8CaWs2qFcMd0kIwZr~MFwM4QqS4ta0CErJXtPGEg49f05WrkJf~nIlu1ueTkvBrtPhBPxkxDFIxmHHBPo1NHWf3uKTCZx4OMYt-iyG9k1FMGPew4SF5EHxW2QJg5dJIDPaeCm~rbLhA5lj7vXr7ZbViZC89pMNgqdA0rLDOgzHYEqo84E2oNel0mbn5fhauZgcakCHvftHPKuz3zg~nwyj-mA__" alt="Verification Image">
+                    <img id="cute-image" src="https://media-hosting.imagekit.io/17868e6c4a094eea/IMG_5547.JPG?Expires=1839414555&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=3QbhngttKniUflpRe8wp3ZBcLezz0KVkYncZMSevI6A~hBPMFt9Zgbex4HmMDUtg3ulRZ12DSdha1oaUUlslh1GmGp7jYsLMQUlruhlGtZCxjzboRr4t3gd1NXCu5E0zv0AOJ9kNTcWyCtqiAfq98t~aH6nQmRjg4r5o2UQ6-DihVkaCf25R7k0AJaG453LBeX5InG9yOBfPRejguLpqs3VM4xejhtUS37u8Ry5CiPmQB~KVyD4gnvxTapiR4flePPydDgCrut7Q3QLuidVQhMCS7dP9d7O9mmT3HHgGk4TKrfhnEWlHSYjw3FX7tjzErmH0qumk2X84zmdIt-DJrQ__" alt="Verification Image">
                 </div>
                 <button id="verify-btn">Verify You Are Human</button>
-                <div id="verification-message" style="display: none; color: green;">Verification successful!</div>
+                <div id="verification-message" style="display: none; color: var(--accent-blue); font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">VERIFICATION SUCCESSFUL!</div>
                 <button id="upload-btn" style="display: none;">Upload CSV File</button>
                 <input type="file" id="csv-file" accept=".csv" style="display: none;">
                 <div id="file-info"></div>
             </div>
 
-            <div id="loading" class="loading">Loading data...</div>
+            <div id="loading" class="loading" style="display: none;">Loading data...</div>
 
             <div id="table-section">
-                <div id="table" class="data-table">
+                <div id="table" class="data-table pixel-border">
                     <div class="table-row table-header">
                         <div>City</div>
                         <div>State</div>
@@ -434,9 +725,9 @@
                 </div>
             </div>
 
-            <div id="map"></div>
+            <div id="map" class="pixel-border"></div>
         </div>
-    </div>    
+    </div>
 
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
         <symbol id="flower" viewBox="0 0 100 100">
@@ -619,49 +910,81 @@
         });
         map.addLayer(markersCluster);
 
-        // Verification button handler
+        // Verification button handler - FIXED VERSION
+        // ===== VERIFICATION BUTTON FIX =====
         document.getElementById('verify-btn').addEventListener('click', function() {
-            // Show the 8-bit loading screen
             const loadingScreen = document.getElementById('loading-screen');
+            const verifyBtn = document.getElementById('verify-btn');
+            const verificationMessage = document.getElementById('verification-message');
+            const uploadBtn = document.getElementById('upload-btn');
+            const imageContainer = document.querySelector('.image-container');
+            
+            // Show loading screen
             loadingScreen.classList.add('active');
             
-            // Start the heart animation
+            // Start heart animation
             heartAnimationInterval = animateHearts();
             
-            // After a delay, complete the verification process
+            // After 3 seconds, complete verification
             setTimeout(() => {
-                // Change loading text to "VERIFIED!"
+                // Update loading text
                 document.getElementById('loading-text').textContent = "VERIFIED!";
                 
                 // Show all hearts
-                hearts.forEach(heart => {
-                    heart.style.opacity = 1;
+                document.querySelectorAll('.pixel-heart').forEach(heart => {
+                    heart.style.opacity = '1';
                 });
                 
-                // After another short delay, hide loading screen and show verification success
+                // After brief delay, hide loading screen and show success
                 setTimeout(() => {
-                    // Clear the heart animation interval
+                    // Stop heart animation
                     clearInterval(heartAnimationInterval);
                     
                     // Hide loading screen
                     loadingScreen.classList.remove('active');
                     
-                    // Show the image container and verification success elements
-                    const imageContainer = document.querySelector('.image-container');
+                    // Show verification success UI
                     imageContainer.classList.add('active');
-                    document.getElementById('verification-message').style.display = 'block';
-                    document.getElementById('upload-btn').style.display = 'inline-block';
-                    document.getElementById('verify-btn').style.display = 'none';
-                }, 1500);
-            }, 6000); // 6 seconds of loading animation
+                    verificationMessage.style.display = 'block';
+                    uploadBtn.style.display = 'inline-block';
+                    verifyBtn.style.display = 'none';
+                }, 500);
+            }, 3000);
         });
 
-        // File upload handling
+        // File upload handling - FIXED VERSION
+        // ===== FILE UPLOAD FIX =====
         document.getElementById('upload-btn').addEventListener('click', () => {
             document.getElementById('csv-file').click();
         });
 
-        document.getElementById('csv-file').addEventListener('change', handleFileUpload);
+        document.getElementById('csv-file').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Show loading ONLY when file is selected
+            const loadingElement = document.getElementById('loading');
+            loadingElement.style.display = 'block';
+            loadingElement.textContent = 'Loading data...';
+            
+            document.getElementById('file-info').textContent = `Loaded: ${file.name}`;
+            
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    allData = results.data.filter(item => item.City && item.State);
+                    loadingElement.style.display = 'none';
+                    document.getElementById('total-items').textContent = allData.length;
+                    currentPage = 1;
+                    updateTableAndMap();
+                },
+                error: function(error) {
+                    console.error('Error parsing CSV:', error);
+                    loadingElement.textContent = 'Error loading file. Please try again.';
+                }
+            });
+        });
 
         // Pagination controls
         document.getElementById('prev-page').addEventListener('click', () => {
@@ -679,38 +1002,12 @@
             }
         });
 
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            document.getElementById('file-info').textContent = `Loaded: ${file.name}`;
-            document.getElementById('loading').style.display = 'block';
-            
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    allData = results.data.filter(item => item.City && item.State);
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('total-items').textContent = allData.length;
-                    currentPage = 1;
-                    updateTableAndMap();
-                },
-                error: function(error) {
-                    console.error('Error parsing CSV:', error);
-                    document.getElementById('loading').textContent = 'Error loading file. Please try again.';
-                }
-            });
-        }
-
-        // Update both table and map based on current page
         function updateTableAndMap() {
             updateTable();
             updateMap();
             updatePaginationControls();
         }
 
-        // Update the data table
         function updateTable() {
             const table = document.getElementById('table');
             const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -740,7 +1037,6 @@
             document.getElementById('end-item').textContent = Math.min(endIdx, allData.length);
         }
 
-        // Update the map with clustered markers
         function updateMap() {
             // Clear existing markers
             markersCluster.clearLayers();
@@ -760,7 +1056,6 @@
             });
         }
 
-        // Get random subset of array
         function getRandomSubset(array, size) {
             const shuffled = [...array];
             for (let i = shuffled.length - 1; i > 0; i--) {
@@ -770,14 +1065,12 @@
             return shuffled.slice(0, size);
         }
 
-        // Update pagination controls state
         function updatePaginationControls() {
             const totalPages = Math.ceil(allData.length / ITEMS_PER_PAGE);
             document.getElementById('prev-page').disabled = currentPage <= 1;
             document.getElementById('next-page').disabled = currentPage >= totalPages;
         }
 
-        // Add marker with geocoding
         async function addMarkerToMap(item) {
             try {
                 const coords = await geocodeLocation(item.City, item.State);
@@ -788,10 +1081,14 @@
                 }
             } catch (error) {
                 console.error('Error geocoding:', item.City, item.State, error);
+                // Fallback to random nearby coordinates if geocoding fails
+                const fallback = getFallbackCoords();
+                const marker = L.marker([fallback.lat, fallback.lng]);
+                marker.bindPopup(createPopupContent(item));
+                markersCluster.addLayer(marker);
             }
         }
 
-        // Create popup content
         function createPopupContent(item) {
             return `
                 <div class="popup-content">
@@ -805,7 +1102,6 @@
             `;
         }
 
-        // Geocode location using Nominatim
         async function geocodeLocation(city, state) {
             try {
                 const response = await fetch(
@@ -821,21 +1117,18 @@
                 throw new Error('No results found');
             } catch (error) {
                 console.error('Geocoding error:', error);
-                // Fallback to random nearby coordinates if geocoding fails
                 return getFallbackCoords();
             }
         }
 
-        // Fallback coordinates (random near US center)
         function getFallbackCoords() {
             return {
                 lat: 37.8 + (Math.random() - 0.5) * 10,
                 lng: -96 + (Math.random() - 0.5) * 10
             };
         }
-
-        // Initial state
-        document.getElementById('loading').style.display = 'none';
     </script>
 </body>
 </html>
+</div>
+{% endblock %}
