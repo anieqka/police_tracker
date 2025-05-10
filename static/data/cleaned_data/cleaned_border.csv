@@ -1,0 +1,208 @@
+City,State,Agency,tech_type,Vendor,date,year
+Bisbee,Arizona,Cochise County Sheriff's Office,Body-worn Cameras,Axon,3/26/2019,2019.0
+Bisbee,Arizona,Cochise County Sheriff's Office,Camera Network,Cogniac,12/4/2017,2017.0
+Bisbee,Arizona,Cochise County Sheriff's Office,Cell-site Simulators,,5/3/2018,2018.0
+Bisbee,Arizona,Cochise County Sheriff's Office,Drones,Lockheed Martin,4/8/2014,2014.0
+Bisbee,Arizona,Cochise County Sheriff's Office,Starchase,Starchase,6/12/2012,2012.0
+Fort Huachuca,Arizona,Fort Huachuca Military Police,Camera Network,Panasonic,9/11/2013,2013.0
+Huachuca City,Arizona,Huachuca City Police,Body-worn Cameras,,7/21/2017,2017.0
+Sierra Vista,Arizona,Sierra Vista Police Department,Body-worn Cameras,Axon,2/1/2017,2017.0
+Sierra Vista,Arizona,Sierra Vista Police Department,Drones,,4/13/2018,2018.0
+Tombstone,Arizona,Tombstone Marshal's Office,Drones,,5/3/2019,2019.0
+Fort Huachuca,Arizona,U.S. Army Fort Huachuca,Drones,,,
+Fort Huachuca,Arizona,U.S. Customs and Border Protection,Drones,General Automatics,2015,2015.0
+Huachuca City,Arizona,U.S. Customs and Border Protection,Tethered Aerostat Radar System,,2017,2017.0
+Phoenix,Arizona,Arizona Department of Public Safety,Face recognition,,2018,2018.0
+Phoenix,Arizona,Arizona Department of Transportation,Face recognition,,07/08/2019,2019.0
+ Tohono O'odham Nation,Arizona,Drug Enforcement Administration,Automated License Plate Readers,,8/5/2012,2012.0
+Marana,Arizona,Marana Police Department,Automated License Plate Readers,,04/04/2019,2019.0
+Marana,Arizona,Marana Police Department,Body-worn Cameras,Axon,7/8/2016,2016.0
+Oro Valley,Arizona,Oro Valley Police Department,Automated License Plate Readers,,1/15/2019,2019.0
+Oro Valley,Arizona,Oro Valley Police Department,Drones,DJI,4/22/2018,2018.0
+Tucson,Arizona,Pima County Sheriff's Department,Automated License Plate Readers,,5/7/2019,2019.0
+Tucson,Arizona,Pima County Sheriff's Department,Drones,,2/25/2019,2019.0
+Sahuarita,Arizona,Sahuarita Police Department,Body-worn Cameras,Axon,11/3/2017,2017.0
+Sahuarita,Arizona,Sahuarita Police Department,Drones,,1/8/2017,2017.0
+South Tucson,Arizona,South Tucson Police Department,Body-worn Cameras,Axon,8/14/2017,2017.0
+Tucson,Arizona,Tucson Police Department,Artificial Intelligence,Forensic Logic ,,
+Tucson,Arizona,Tucson Police Department,Body-worn Cameras,,1/14/2019,2019.0
+Tucson,Arizona,Tucson Police Department,Camera Registry,,09/20/2018,2018.0
+Tucson,Arizona,Tucson Police Department,Real-Time Crime Centers,,3/1/2017,2017.0
+Tohono O’odham Nation,Arizona,U.S. Customs and Border Protection,Integrated Fixed Towers,Elbit Systems of America,8/25/2019,2019.0
+Tucson,Arizona,U.S. Border Patrol: Tucson Secto,Mobile Surveillance Vehicle,,2017,2017.0
+Tucson,Arizona,U.S. Border Patrol: Tucson Secto,Unattended Ground Sensors,,November 2017,2017.0
+Nogales,Arizona,Nogales Police Department,Automated License Plate Readers,,04/06/2009,2009.0
+Yuma,Arizona,City of Yuma,Smart Streetlights,Siemens and anyCOMM,2019,2019.0
+Yuma,Arizona,U.S. Border Patrol: Yuma Sector,Mobile Surveillance Vehicle,,2017,2017.0
+Yuma,Arizona,U.S. Border Patrol: Yuma Sector,Unattended Ground Sensors,,November 2017,2017.0
+Yuma,Arizona,U.S. Customs and Border Protection,Tethered Aerostat Radar System,,2017,2017.0
+Yuma,Arizona,Yuma County Sheriff's Office,Automated License Plate Readers,,12/15/2008,2008.0
+Yuma,Arizona,Yuma County Sheriff's Office,Body-worn Cameras,Visual Labs Inc. ,2017,2017.0
+Yuma,Arizona,Yuma Police Department,Automated License Plate Readers,,2010,2010.0
+Yuma,Arizona,Yuma Police Department,Body-worn Cameras,,09/27/2016,2016.0
+Calexico,California,Calexico Police Department,Automated License Plate Readers,Convergint Technologies,09/20/2017,2017.0
+Calexico,California,Calexico Police Department,Body-worn Cameras,,6/30/2016,2016.0
+Calexico,California,Calexico Police Department,Camera Network,Convergint Technologies,09/20/2017,2017.0
+El Centro,California,El Centro Police Department,Automated License Plate Readers,,06/07/2019,2019.0
+El Centro,California,El Centro Police Department,Body-worn Cameras,Vievu,8/14/2014,2014.0
+El Centro,California,Imperial County Sheriff's Office,Automated License Plate Readers,,12/6/2016,2016.0
+El Centro,California,Imperial County Sheriff's Office,Body-worn Cameras,,1/19/2017,2017.0
+El Centro,California,Imperial County Sheriff's Office,Drones,,06/27/2019,2019.0
+El Centro,California,U.S. Border Patrol: El Centro Sector,Mobile Surveillance Vehicle,,2017,2017.0
+El Centro,California,U.S. Border Patrol: El Centro Sector,Remote Video Surveillance Systems,,10/15/2018,2018.0
+San Marcos,California,California State University San Marcos Police Department,Automated License Plate Readers,,10/13/2018,2018.0
+San Marcos,California,California State University San Marcos Police Department,Body-worn Cameras,Axon,Unknown,
+Carlsbad,California,Carlsbad Police Department,Automated License Plate Readers,,8/21/2018,2018.0
+Carlsbad,California,Carlsbad Police Department,Body-worn Cameras,,8/1/2016,2016.0
+Carlsbad,California,Carlsbad Police Department,Ring/Neighbors,Ring,07/26/2019,2019.0
+Chula Vista,California,Chula Vista Police Department,Automated License Plate Readers,,10/8/2015,2015.0
+Chula Vista,California,Chula Vista Police Department,Camera Network,,,
+Chula Vista,California,Chula Vista Police Department,Drones,DJI,,
+Chula Vista,California,Chula Vista Police Department,Ring/Neighbors,Ring,07/25/2019,2019.0
+Coronado,California,Coronado Police Department,Automated License Plate Readers,,3/24/2016,2016.0
+Coronado,California,Coronado Police Department,Body-worn Cameras,,1/1/2012,2012.0
+El Cajon,California,El Cajon Police Department,Automated License Plate Readers,,,
+El Cajon,California,El Cajon Police Department,Body-worn Cameras,Axon,12/19/2016,2016.0
+Escondido,California,Escondido Police Department,Automated License Plate Readers,,06/11/2019,2019.0
+Escondido,California,Escondido Police Department,Body-worn Cameras,Axon,06/05/2019,2019.0
+Escondido,California,Escondido Police Department,Drones,DJI,07/04/2019,2019.0
+La Mesa,California,La Mesa Police Department,Automated License Plate Readers,Vigilant Solutions,02/22/2018,2018.0
+La Mesa,California,La Mesa Police Department,Body-worn Cameras,,08/19/2019,2019.0
+La Mesa,California,La Mesa Police Department,Ring/Neighbors,Ring,07/28/2019,2019.0
+National City,California,National City Police Department,Drones,,07/12/2018,2018.0
+Oceanside,California,Oceanside Police Department,Automated License Plate Readers,,,
+Oceanside,California,Oceanside Police Department,Ring/Neighbors,Ring,07/27/2019,2019.0
+San Diego,California,San Diego Association of Governments/Automated Regional Justice Information System,Automated License Plate Readers,,2/13/2015,2015.0
+San Diego,California,San Diego Association of Governments/Automated Regional Justice Information System,Face Recognition,FaceFirst,2/13/2015,2015.0
+San Diego,California,San Diego County Sheriff's Department,Body-worn Cameras,Axon,01/22/2019,2019.0
+San Diego,California,San Diego County Sheriff's Department,Drones,,10/30/2017,2017.0
+San Diego,California,San Diego County Sheriff's Department,Ring/Neighbors,Ring,07/24/2019,2019.0
+San Diego,California,San Diego Harbor Police Department,Automated License Plate Readers,Vigilant Solutions/3m,04/03/2016,2016.0
+San Diego,California,San Diego Harbor Police Department,Drones,DJI,2/13/2019,2019.0
+San Diego,California,San Diego Law Enforcement Coordination Center,Fusion Center,Palantir Technologies,05/14/2013,2013.0
+San Diego,California,San Diego Police Department,Automated License Plate Readers,Vigilant Solutions/3M,04/23/2018,2018.0
+San Diego,California,San Diego Police Department,Body-worn Cameras,Axon,09/26/2017,2017.0
+San Diego,California,San Diego Police Department,Camera Network,GE/City IQ,08/05/2019,2019.0
+San Diego,California,San Diego Police Department,Camera Network,,08/18/14,2014.0
+San Diego,California,San Diego Police Department,Cell-site Simulators,Harris Corporation,03/19/2016,2016.0
+San Diego,California,San Diego Police Department,Drones,DJI,2/15/2019,2019.0
+San Diego,California,San Diego Police Department,Gunshot detection,ShotSpotter,11/23/2016,2016.0
+San Diego,California,San Diego Police Department,Mobile Surveillance Vehicle,Terrahawk,2011,2011.0
+San Diego,California,San Diego Police Department,Surveillance Trailer,Absolute Surveillance,2013,2013.0
+San Diego,California,San Diego State University Police Department,Body-worn Cameras,,5/17/2017,2017.0
+San Diego,California,U.S. Border Patrol: San Diego Sector,Integrated Fixed Towers,Elbit Systems of America,10/15/2018,2018.0
+San Diego,California,U.S. Border Patrol: San Diego Sector,Mobile Surveillance Vehicle,,2017,2017.0
+San Diego,California,U.S. Border Patrol: San Diego Sector,Remote Video Surveillance Systems,,10/15/2018,2018.0
+San Diego,California,University of California San Diego Police Department,Gunshot detection,Shotspotter,06/23/2017,2017.0
+San Diego ,California,Customs and Border Protection ,Surveillance Towers,Anduril ,08/05/2019,2019.0
+Lemon Grove,California,San Diego County Sheriff's Office,Camera Network,Genetec,10/07/2019,2019.0
+Las Cruces,New Mexico,Doña Ana County Sheriff's Office,Automated License Plate Readers,,5/23/2017,2017.0
+Las Cruces,New Mexico,Doña Ana County Sheriff's Office,Body-worn Cameras,,7/9/2018,2018.0
+Las Cruces,New Mexico,Doña Ana County Sheriff's Office,Face Recognition,OD Tactical Eyewear USA,11/16/2017,2017.0
+Las Cruces,New Mexico,Doña Ana County Sheriff's Office,Iris scanning,Bi2 Techonologies,4/10/2018,2018.0
+Las Cruces,New Mexico,Doña Ana County Sheriff's Office,Mobile Surveillance Vehicle,Strong Watch Corporation,3/9/2016,2016.0
+Las Cruces,New Mexico,Las Cruces Police Department,Body-worn Cameras,Axon,4/4/2015,2015.0
+Las Cruces,New Mexico,New Mexico State University Police Department ,Drones,,07/09/2019,2019.0
+Sunland Park,New Mexico,Sunland Park Police Department,Body-worn Cameras,,9/2/2015,2015.0
+Deming,New Mexico,U.S. Customs and Border Protection,Tethered Aerostat Radar System,,2017,2017.0
+Alpine,Texas,Brewster County Sheriff's Office,Drones,DJI,12/30/2018,2018.0
+Alpine,Texas,Brewster County Sheriff's Office,Mobile Surveillance Vehicle,Terrahawk,2012,2012.0
+Brownsville,Texas,Brownsville Fire Department,Drones,,1/15/2017,2017.0
+Brownsville,Texas,Brownsville Police Department,Body-worn Cameras,Axon,8/4/2015,2015.0
+Brownsville,Texas,Brownsville Police Department,Camera Network,Xtreme Security,8/23/2018,2018.0
+Brownsville,Texas,Brownsville Police Department/Brownsville Department of Public Health,Automated License Plate Readers/Camera Network,Wireless CCTV,3/7/2018,2018.0
+Olmito,Texas,Cameron County Sheriff's Office,Body-worn Cameras,,5/24/2017,2017.0
+Brownsville,Texas,Cameron County Sheriff's Office,Iris scanning,Bi2 Techonologies,7/25/2017,2017.0
+Laguna Vista,Texas,Laguna Vista Police Department,Body-worn Cameras,Axon,02/06/2015,2015.0
+South Padre Island,Texas,South Padre Island Police Department,Automated License Plate Readers,,3/2/2018,2018.0
+South Padre Island,Texas,South Padre Island Police Department,Body-worn Cameras,,3/1/2018,2018.0
+South Padre Island,Texas,South Padre Island Police Department,Drones,Yuneec,3/9/2016,2016.0
+Brownsville,Texas,Texas Department of Public Safety,Spy Plane,,5/23/2018,2018.0
+El Paso,Texas,Drug Enforcement Administration,Cell-site Simulators,Harris Corp.,3/17/2017,2017.0
+El Paso,Texas,Drug Enforcement Administration: El Paso Intelligence Center,Automated License Plate Readers,,01/26/2015,2015.0
+El Paso,Texas,El Paso County Sheriff's Office,Body-worn Cameras,Axon,12/11/2017,2017.0
+El Paso,Texas,El Paso County Sheriff's Office,Iris scanning,Bi2 Techonologies,6/16/2017,2017.0
+El Paso,Texas,El Paso ISD Police Department,Body-worn Cameras,,4/25/2016,2016.0
+El Paso,Texas,El Paso Police Department,Automated License Plate Readers/Surveillance Trailer,Skycop,,
+El Paso,Texas,El Paso Police Department,Body-worn Cameras,WatchGuard,04/30/2019,2019.0
+El Paso,Texas,El Paso Police Department,Camera Registry,,,
+El Paso,Texas,El Paso Police Department,Drones,,2018,2018.0
+El Paso,Texas,El Paso Police Department,Fusion Center,,2019,2019.0
+Horizon City,Texas,Horizon City Police Department,Automated License Plate Readers,,,
+Horizon City,Texas,Horizon City Police Department,Body-worn Cameras,,12/11/2017,2017.0
+El Paso,Texas,Texas Department of Public Safety,Spy Plane,,5/23/2018,2018.0
+El Paso,Texas,U.S. Border Patrol: El Paso Sector,Integrated Fixed Towers,Elbit Systems of America,10/15/2018,2018.0
+El Paso,Texas,U.S. Border Patrol: El Paso Sector,Mobile Surveillance Vehicle,,2017,2017.0
+El Paso,Texas,U.S. Border Patrol: El Paso Sector,Remote Video Surveillance Systems,,10/15/2018,2018.0
+El Paso,Texas,Customs and Border Protection ,Surveillance Towers,Anduril ,08/04/2019,2019.0
+Alamo,Texas,Alamo Police Department,Body-worn Cameras,Axon,Sep/Oct 2019,
+Edinburg,Texas,Edinburg Police Department,Automated License Plate Readers,Vigilant Solutions,6/11/2018,2018.0
+Edinburg,Texas,Edinburg Police Department,Automated License Plate Readers/Surveillance Trailer,Skycop,6/11/2018,2018.0
+Edinburg,Texas,Edinburg Police Department,Body-worn Cameras,Coban,8/3/2016,2016.0
+Pharr,Texas,Hidalgo County Constables ,Camera Network,,1/25/2017,2017.0
+Edinburg,Texas,Hidalgo County Sheriff's Office,Automated License Plate Readers,Vigilant Solutions,6/6/2019,2019.0
+Edinburg,Texas,Hidalgo County Sheriff's Office,Automated License Plate Readers/Surveillance Trailer,SkyCop,6/11/2018,2018.0
+Edinburg,Texas,Hidalgo County Sheriff's Office,Camera Network,,2019,2019.0
+Edinburg,Texas,Hidalgo County Sheriff's Office,Drones,,06/06/2019,2019.0
+Edinburg,Texas,Hidalgo County Sheriff's Office,Iris scanning,Bi2 Techonologies,3/21/2018,2018.0
+Edinburg,Texas,Hidalgo County Sheriff's Office,Pole Cameras,,6/11/2018,2018.0
+Hidalgo ,Texas,Hidalgo Police Department,Automated License Plate Readers/Surveillance Trailer,Skycop,6/12/2018,2018.0
+McAllen,Texas,McAllen Police Department,Automated License Plate Readers,Wi4net,8/24/2010,2010.0
+McAllen,Texas,McAllen Police Department,Camera Network,Wi4net,8/24/2010,2010.0
+McAllen,Texas,McAllen Police Department,Camera Network,,03/08/2016,2016.0
+Pharr,Texas,Pharr Police Department,Automated License Plate Readers/Surveillance Trailer,Skycop,6/14/2018,2018.0
+Pharr,Texas,Pharr Police Department,Body-worn Cameras,,11/6/2016,2016.0
+McAllen,Texas,Texas Department of Public Safety,Predictive Policing,,,
+Mission,Texas,Texas Department of Public Safety,Spy Plane,,5/23/2018,2018.0
+McAllen,Texas,U.S. Border Patrol: McAllen Station,Tactical Aerostat,,2017,2017.0
+Weslaco,Texas,U.S. Border Patrol: Weslaco Station,Tactical Aerostat,,2017,2017.0
+Mission ,Texas,Mission Police Department ,Automated License Plate Readers,,09/26/17,2017.0
+Mission ,Texas,Mission Police Department ,Body-worn Cameras,,05/08/2017,2017.0
+Mission ,Texas,Mission Police Department ,Drones,,09/11/2017,2017.0
+San Juan ,Texas,San Juan Police Department ,Body-worn Cameras,,02/10/15,2015.0
+Weslaco,Texas,Weslaco Police Department,Body-worn Cameras,WatchGuard,7/17/2018,2018.0
+Fort Hancock,Texas,Texas Department of Public Safety,Spy Plane,,5/23/2018,2018.0
+Fort Davis,Texas,Jeff Davis County Sheriff's Office,Mobile Surveillance Vehicle,Terrahawk,2012,2012.0
+Bracketville,Texas,Kinney County Commissioners Court,Body-worn Cameras,,2/12/2018,2018.0
+Eagle Pass,Texas,Eagle Pass Police Department,Body-worn Cameras,,03/21/2018,2018.0
+Eagle Pass,Texas,Maverick County Sheriff’s Department,Body-worn Cameras,,03/10/2017,2017.0
+Del Rio,Texas,U.S. Border Patrol: Del Rio Sector ,Integrated Fixed Towers,Elbit Systems of America,10/15/2018,2018.0
+Del Rio,Texas,U.S. Border Patrol: Del Rio Sector ,Mobile Surveillance Vehicle,,2017,2017.0
+Del Rio,Texas,U.S. Border Patrol: Del Rio Sector ,Remote Video Surveillance Systems,,10/15/2018,2018.0
+Eagle Pass,Texas,U.S. Customs and Border Protection,Tethered Aerostat Radar System,,2017,2017.0
+Marfa,Texas,U.S. Border Patrol: Big Bend Sector,Mobile Surveillance Vehicle,,2017,2017.0
+Marfa,Texas,U.S. Border Patrol: Big Bend Sector,Remote Video Surveillance Systems,,10/15/2018,2018.0
+Marfa,Texas,U.S. Customs and Border Protection,Tethered Aerostat Radar System,,2017,2017.0
+Rio Grande ,Texas,Rio Grande City Police Department ,Body-worn Cameras,,9/4/2014,2014.0
+Rio Grande City,Texas,Starr County Sheriff’s Office,Automated License Plate Readers,,2009,2009.0
+Rio Grande City,Texas,Texas Department of Public Safety,Spy Plane,,5/23/2018,2018.0
+Rio Grande Valley,Texas,U.S. Border Patrol: Rio Grand Valley Sector,Integrated Fixed Towers,Elbit Systems of America,10/15/2018,2018.0
+Rio Grande Valley,Texas,U.S. Border Patrol: Rio Grand Valley Sector,Remote Video Surveillance Systems,,10/15/2018,2018.0
+Rio Grande City,Texas,U.S. Border Patrol: Rio Grande City Station,Tactical Aerostat,,2017,2017.0
+Rio Grande City,Texas,U.S. Customs and Border Protection,Tethered Aerostat Radar System,,2017,2017.0
+Sanderson,Texas,Terrell County Sheriff's Office,Body-worn Cameras,Digital Ally,1/22/2018,2018.0
+Austin,Texas,Texas Department of Public Safety,Camera Network,,,
+Austin,Texas,Texas Department of Public Safety,Face recognition,,2016,2016.0
+Del Rio,Texas,Del Rio Police Department,Automated License Plate Readers,,2013,2013.0
+Del Rio,Texas,Del Rio Police Department,Body-worn Cameras,,7/16/2017,2017.0
+Del Rio,Texas,Val Verde County Sheriff's Office,Body-worn Cameras,,7/16/2017,2017.0
+Del Rio,Texas,Val Verde County Sheriff's Office,Lidar,Quanergy,9/18/2018,2018.0
+Del Rio,Texas,Val Verde County Sheriff's Office,Mobile Surveillance Vehicle,Terrahawk,2012,2012.0
+Laredo,Texas,Drug Enforcement Administration,Automated License Plate Readers,Perceptics,7/17/2017,2017.0
+Laredo,Texas,Laredo Independent School District Police Department,Body-worn Cameras,,9/11/2017,2017.0
+Laredo,Texas,Laredo Police Department,Automated License Plate Readers,Wireless CCTV,11/5/2018,2018.0
+Laredo,Texas,Laredo Police Department,Body-worn Cameras,,2/19/2019,2019.0
+Laredo,Texas,Laredo Police Department,Camera Networks/Real-Time Crime Centers,,1/29/2018,2018.0
+Laredo,Texas,Laredo Police Department,Drones,Leptron,01/19/2016,2016.0
+Laredo,Texas,Texas A&M International University Police Department,Body-worn Cameras,,02/08/2017,2017.0
+Laredo,Texas,Texas Department of Public Safety,Spy Plane,,5/23/2018,2018.0
+Laredo,Texas,U.S. Border Patrol: Laredo Sector,Integrated Fixed Towers,Elbit Systems of America,10/15/2018,2018.0
+Laredo,Texas,U.S. Border Patrol: Laredo Sector,Remote Video Surveillance Systems,,10/15/2018,2018.0
+Laredo,Texas,United Independent School District Police Department,Body-worn Cameras,,02/08/2017,2017.0
+Laredo,Texas,Webb County Sheriff's Office,Automated License Plate Readers,,1/31/2019,2019.0
+Laredo,Texas,Webb County Sheriff's Office,Body-worn Cameras,,9/12/2016,2016.0
+Laredo,Texas,Webb County Sheriff's Office,Camera Network,,12/6/2018,2018.0
+Laredo,Texas,Webb County Sheriff's Office,Mobile Surveillance Vehicle,Terrahawk,2012,2012.0
+Zapata,Texas,Texas Department of Public Safety,Spy Plane,,5/23/2018,2018.0
+Zapata,Texas,U.S. Border Patrol: Zapata Station,Tactical Aerostat,,2017,2017.0
+Zapata,Texas,Zapata County Sheriff's Office,Mobile Surveillance Vehicle,Terrahawk,2012,2012.0

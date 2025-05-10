@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,9 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
     <style>
         :root {
             --primary-pink: #ff6bb4;
@@ -32,21 +30,8 @@
             padding: 0;
             background-color: #000;
             color: var(--text-pink);
-            cursor: none;
             overflow-x: hidden;
             position: relative;
-            background: 
-                linear-gradient(transparent 95%, rgba(255, 105, 180, 0.1) 96%),
-                linear-gradient(90deg, transparent 95%, rgba(255, 105, 180, 0.1) 96%);
-            background-size: 20px 20px;
-            background-color: #1a001a;
-        }
-
-        .content-wrapper {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
-            margin: 0 auto;
         }
 
         .container {
@@ -60,30 +45,36 @@
         .pixel-border {
             position: relative;
             border: 4px solid var(--primary-pink);
-            border-image: 
-                linear-gradient(
-                    45deg,
-                    var(--primary-pink),
-                    var(--accent-purple),
-                    var(--accent-blue),
-                    var(--primary-pink)
-                ) 1;
+            border-image: linear-gradient(45deg, var(--primary-pink), var(--accent-purple), var(--accent-blue), var(--primary-pink)) 1;
             animation: borderPulse 4s linear infinite;
-            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5),
-                        inset 0 0 15px rgba(255, 105, 180, 0.3);
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5), inset 0 0 15px rgba(255, 105, 180, 0.3);
         }
 
         @keyframes borderPulse {
-            0% { border-image-source: linear-gradient(45deg, var(--primary-pink), var(--accent-purple), var(--accent-blue), var(--primary-pink)); }
-            25% { border-image-source: linear-gradient(45deg, var(--accent-purple), var(--accent-blue), var(--primary-pink), var(--accent-purple)); }
-            50% { border-image-source: linear-gradient(45deg, var(--accent-blue), var(--primary-pink), var(--accent-purple), var(--accent-blue)); }
-            75% { border-image-source: linear-gradient(45deg, var(--primary-pink), var(--accent-purple), var(--accent-blue), var(--primary-pink)); }
-            100% { border-image-source: linear-gradient(45deg, var(--accent-purple), var(--accent-blue), var(--primary-pink), var(--accent-purple)); }
+            0% {
+                border-image-source: linear-gradient(45deg, var(--primary-pink), var(--accent-purple), var(--accent-blue), var(--primary-pink));
+            }
+
+            25% {
+                border-image-source: linear-gradient(45deg, var(--accent-purple), var(--accent-blue), var(--primary-pink), var(--accent-purple));
+            }
+
+            50% {
+                border-image-source: linear-gradient(45deg, var(--accent-blue), var(--primary-pink), var(--accent-purple), var(--accent-blue));
+            }
+
+            75% {
+                border-image-source: linear-gradient(45deg, var(--primary-pink), var(--accent-purple), var(--accent-blue), var(--primary-pink));
+            }
+
+            100% {
+                border-image-source: linear-gradient(45deg, var(--accent-purple), var(--accent-blue), var(--primary-pink), var(--accent-purple));
+            }
         }
 
         .about-section {
-            background: rgba(219, 77, 140, 0.8); /* Darker pink with transparency */
-            border-radius: 0; /* Sharp corners for 8-bit look */
+            background: rgba(219, 77, 140, 0.8);
+            border-radius: 0;
             padding: 25px;
             margin: 30px 0;
             position: relative;
@@ -102,11 +93,17 @@
         }
 
         @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 100% 50%;
+            }
         }
 
-        .about-section h1, .about-section h2 {
+        .about-section h1,
+        .about-section h2 {
             color: var(--text-pink);
             font-family: 'Press Start 2P', cursive;
             text-align: center;
@@ -124,7 +121,7 @@
         }
 
         .citation-container {
-            background: rgba(255, 204, 230, 0.2); /* Lighter pink for citation */
+            background: rgba(255, 204, 230, 0.2);
             padding: 1.5rem;
             border-radius: 0;
             margin: 20px 0;
@@ -161,7 +158,7 @@
 
         /* Flower cursor trail */
         .flower-trail {
-            position: absolute;
+            position: fixed;
             width: 24px;
             height: 24px;
             pointer-events: none;
@@ -169,7 +166,7 @@
             opacity: 0;
             transform: translate(-50%, -50%);
             transition: opacity 0.3s, transform 0.2s;
-            filter: drop-shadow(0 0 2px rgba(0,0,0,0.2));
+            filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2));
         }
 
         .navbar {
@@ -182,6 +179,9 @@
             top: 0;
             z-index: 1000;
             backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            transition: all 0.5s ease;
         }
 
         .navbar a {
@@ -200,7 +200,7 @@
         }
 
         .navbar a:hover {
-            color: var(--accent-blue);
+            color: var(--neon-blue);
             text-shadow: 0 0 5px var(--accent-purple);
         }
 
@@ -219,7 +219,15 @@
             width: 100%;
         }
 
-        /* Add to your existing styles */
+        .navbar a.active {
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--accent-purple);
+        }
+
+        .navbar a.active::after {
+            width: 100%;
+        }
+
         .navbar a[href="./data.html"] {
             position: relative;
         }
@@ -424,8 +432,8 @@
             color: var(--accent-blue);
             font-weight: 600;
             font-family: 'DotGothic16', sans-serif;
-        } 
-        
+        }
+
         /* Updated image container styles */
         .image-container {
             position: relative;
@@ -458,7 +466,7 @@
             opacity: 1;
             transform: scale(1);
         }
-        
+
         .bubble-effect {
             position: absolute;
             width: 180px;
@@ -474,96 +482,16 @@
                 transform: scale(0.95);
                 opacity: 0.7;
             }
+
             50% {
                 transform: scale(1.05);
                 opacity: 0.9;
             }
+
             100% {
                 transform: scale(0.95);
                 opacity: 0.7;
             }
-        }
-
-        /* 8-bit loading screen styles */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-
-        .loading-screen.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .loading-content {
-            text-align: center;
-        }
-
-        .loading-text {
-            font-family: 'Press Start 2P', cursive;
-            color: var(--primary-pink);
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .hearts-container {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .pixel-heart {
-            width: 50px;
-            height: 45px;
-            position: relative;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .pixel {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background-color: var(--primary-pink);
-        }
-
-        @keyframes textGlow {
-            0% { text-shadow: 4px 4px 0px var(--dark-pink), 0 0 5px var(--primary-pink); }
-            100% { text-shadow: 4px 4px 0px var(--dark-pink), 0 0 20px var(--accent-purple), 0 0 30px var(--primary-pink); }
-        }
-
-        .hearts-container {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-        }
-
-        .pixel-heart {
-            position: relative;
-            width: 50px;
-            height: 50px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            image-rendering: pixelated;
-        }
-
-        .pixel {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background-color: var(--primary-pink);
-            box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
         }
 
         /* 8-bit grid overlay */
@@ -617,15 +545,6 @@
                 font-size: 0.8rem;
             }
 
-            .loading-text {
-                font-size: 24px;
-            }
-
-            .pixel-heart {
-                width: 40px;
-                height: 40px;
-            }
-
             .about-section h1 {
                 font-size: 1.4rem;
             }
@@ -637,31 +556,17 @@
     </style>
 </head>
 <body>
-    <!-- Retro effects -->
     <div class="grid-overlay"></div>
     <div class="scanlines"></div>
 
-    <!-- 8-bit style loading screen -->
-    <div class="loading-screen" id="loading-screen">
-        <div class="loading-content">
-            <div class="loading-text" id="loading-text">LOADING...</div>
-            <div class="hearts-container">
-                <div class="pixel-heart" id="heart1"></div>
-                <div class="pixel-heart" id="heart2"></div>
-                <div class="pixel-heart" id="heart3"></div>
-            </div>
-        </div>
-    </div>
-
-
     <div class="content-wrapper">
-        <div class="navbar">
+        <nav class="navbar">
             <div class="container">
-                <a href="#table">Data Table</a>
-                <a href="#map">Interactive Map</a>
-                <a href="./data.html">Data Wars</a>
+                <a href="/#table">Data Table</a>
+                <a href="/#map">Interactive Map</a>
+                <a href="/data.html" class="active">Data Wars</a>
             </div>
-        </div>
+        </nav>
 
         <div class="container">
             <div class="about-section pixel-border">
@@ -689,19 +594,14 @@
             </div>
 
             <h1>Police Technology Tracker</h1>
-        
+            
+            <!-- Add file upload button -->
             <div class="file-upload">
-                <div class="image-container">
-                    <div class="bubble-effect"></div>
-                    <img id="cute-image" src="https://media-hosting.imagekit.io/17868e6c4a094eea/IMG_5547.JPG?Expires=1839414555&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=3QbhngttKniUflpRe8wp3ZBcLezz0KVkYncZMSevI6A~hBPMFt9Zgbex4HmMDUtg3ulRZ12DSdha1oaUUlslh1GmGp7jYsLMQUlruhlGtZCxjzboRr4t3gd1NXCu5E0zv0AOJ9kNTcWyCtqiAfq98t~aH6nQmRjg4r5o2UQ6-DihVkaCf25R7k0AJaG453LBeX5InG9yOBfPRejguLpqs3VM4xejhtUS37u8Ry5CiPmQB~KVyD4gnvxTapiR4flePPydDgCrut7Q3QLuidVQhMCS7dP9d7O9mmT3HHgGk4TKrfhnEWlHSYjw3FX7tjzErmH0qumk2X84zmdIt-DJrQ__" alt="Verification Image">
-                </div>
-                <button id="verify-btn">Verify You Are Human</button>
-                <div id="verification-message" style="display: none; color: var(--accent-blue); font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">VERIFICATION SUCCESSFUL!</div>
-                <button id="upload-btn" style="display: none;">Upload CSV File</button>
-                <input type="file" id="csv-file" accept=".csv" style="display: none;">
+
+                <input type="file" id="file-input" accept=".csv" style="display: none;">
                 <div id="file-info"></div>
             </div>
-
+            
             <div id="loading" class="loading" style="display: none;">Loading data...</div>
 
             <div id="table-section">
@@ -709,9 +609,9 @@
                     <div class="table-row table-header">
                         <div>City</div>
                         <div>State</div>
+                        <div>Agency</div>
                         <div>Technology</div>
                         <div>Vendor</div>
-                        <div>Date</div>
                     </div>
                 </div>
 
@@ -739,29 +639,31 @@
         </symbol>
     </svg>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <!-- Add Leaflet.heat script -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script>
         // ===== FLOWER CURSOR TRAIL =====
         const flowers = [];
         const flowerCount = 12;
         const flowerColors = ['#ff69b4', '#ffb6c1', '#db7093', '#ff85a2', '#ff9ebb'];
         const flowerSizes = [18, 20, 22, 24, 26];
-        
+    
         // Create flower elements
         for (let i = 0; i < flowerCount; i++) {
             const flower = document.createElement('div');
             flower.className = 'flower-trail';
             const size = flowerSizes[Math.floor(Math.random() * flowerSizes.length)];
             const color = flowerColors[Math.floor(Math.random() * flowerColors.length)];
-            
+    
             flower.innerHTML = `
                 <svg width="${size}" height="${size}" style="color: ${color}">
                     <use href="#flower"></use>
                 </svg>
             `;
-            
+    
             flower.style.opacity = 0;
             flower.style.transition = `opacity ${0.2 + i*0.05}s, transform ${0.2 + i*0.03}s`;
             document.body.appendChild(flower);
@@ -771,47 +673,47 @@
                 delay: i * 50
             });
         }
-        
+    
         let mouseX = 0;
         let mouseY = 0;
         let lastPositions = [];
         const positionHistoryLength = 5;
-        
+    
         // Track mouse movement
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-            
+    
             // Store recent positions for smoother trail
             lastPositions.unshift({x: mouseX, y: mouseY});
             if (lastPositions.length > positionHistoryLength) {
                 lastPositions.pop();
             }
-            
+    
             updateFlowerTrail();
         });
-        
+    
         function updateFlowerTrail() {
             flowers.forEach((flower, index) => {
                 const posIndex = Math.min(index, lastPositions.length - 1);
                 if (posIndex >= 0) {
                     const {x, y} = lastPositions[posIndex];
-                    
+    
                     // Calculate delay-based movement
                     setTimeout(() => {
                         flower.element.style.left = `${x}px`;
                         flower.element.style.top = `${y}px`;
                         flower.element.style.opacity = 0.8 - (index * 0.06);
                         flower.element.style.transform = `
-                            translate(-50%, -50%) 
-                            rotate(${index * 15}deg) 
+                            translate(-50%, -50%)
+                            rotate(${index * 15}deg)
                             scale(${0.7 + (index * 0.03)})
                         `;
                     }, flower.delay);
                 }
             });
         }
-        
+    
         // Hide flowers when mouse stops
         let mouseStopTimer;
         document.addEventListener('mousemove', () => {
@@ -826,73 +728,13 @@
             }, 300);
         });
 
-        // ===== 8-BIT LOADING ANIMATION =====
-        // Heart pixel art pattern
-        const heartPattern = [
-            [0,0,1,1,0,0,1,1,0,0],
-            [0,1,1,1,1,1,1,1,1,0],
-            [1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1],
-            [0,1,1,1,1,1,1,1,1,0],
-            [0,0,1,1,1,1,1,1,0,0],
-            [0,0,0,1,1,1,1,0,0,0],
-            [0,0,0,0,1,1,0,0,0,0]
-        ];
-
-        // Create pixel hearts for loading screen
-        const hearts = [
-            document.getElementById('heart1'),
-            document.getElementById('heart2'),
-            document.getElementById('heart3')
-        ];
-
-        // Create each heart
-        hearts.forEach(heart => {
-            heartPattern.forEach((row, rowIndex) => {
-                row.forEach((pixel, colIndex) => {
-                    if (pixel === 1) {
-                        const pixelElement = document.createElement('div');
-                        pixelElement.classList.add('pixel');
-                        pixelElement.style.left = `${colIndex * 5}px`;
-                        pixelElement.style.top = `${rowIndex * 5}px`;
-                        heart.appendChild(pixelElement);
-                    }
-                });
-            });
-        });
-
-        // Animation function for the hearts
-        function animateHearts() {
-            let step = 0;
-            const interval = setInterval(() => {
-                // Update heart visibility based on step
-                hearts.forEach((heart, index) => {
-                    heart.style.opacity = index < step ? '1' : '0';
-                });
-                
-                // Cycle through steps (0, 1, 2, 3, 0, 1, etc.)
-                step = (step + 1) % 4;
-                
-                // Add a little delay when all hearts are hidden
-                if (step === 0) {
-                    setTimeout(() => {
-                        step = 1;
-                    }, 300);
-                }
-            }, 500);
-            
-            return interval;
-        }
-
         // ===== APPLICATION CODE =====
-        // Configuration
         const ITEMS_PER_PAGE = 50;
-        const MAX_MAP_MARKERS = 300;
         let currentPage = 1;
         let allData = [];
         let markersCluster = null;
-        let heartAnimationInterval;
+        let heatLayer = null;
+        let isLoading = false;
 
         // Initialize map
         const map = L.map('map').setView([37.8, -96], 4);
@@ -902,112 +744,121 @@
 
         // Initialize marker cluster group
         markersCluster = L.markerClusterGroup({
-            maxClusterRadius: 40,
-            disableClusteringAtZoom: 8,
+            maxClusterRadius: 80,
+            disableClusteringAtZoom: 12,
             spiderfyOnMaxZoom: true,
             showCoverageOnHover: false,
-            zoomToBoundsOnClick: true
+            chunkedLoading: true,
+            chunkProgress: updateLoadingInfo
         });
         map.addLayer(markersCluster);
 
-        // Verification button handler - FIXED VERSION
-        // ===== VERIFICATION BUTTON FIX =====
-        document.getElementById('verify-btn').addEventListener('click', function() {
-            const loadingScreen = document.getElementById('loading-screen');
-            const verifyBtn = document.getElementById('verify-btn');
-            const verificationMessage = document.getElementById('verification-message');
-            const uploadBtn = document.getElementById('upload-btn');
-            const imageContainer = document.querySelector('.image-container');
-            
-            // Show loading screen
-            loadingScreen.classList.add('active');
-            
-            // Start heart animation
-            heartAnimationInterval = animateHearts();
-            
-            // After 3 seconds, complete verification
-            setTimeout(() => {
-                // Update loading text
-                document.getElementById('loading-text').textContent = "VERIFIED!";
-                
-                // Show all hearts
-                document.querySelectorAll('.pixel-heart').forEach(heart => {
-                    heart.style.opacity = '1';
-                });
-                
-                // After brief delay, hide loading screen and show success
-                setTimeout(() => {
-                    // Stop heart animation
-                    clearInterval(heartAnimationInterval);
-                    
-                    // Hide loading screen
-                    loadingScreen.classList.remove('active');
-                    
-                    // Show verification success UI
-                    imageContainer.classList.add('active');
-                    verificationMessage.style.display = 'block';
-                    uploadBtn.style.display = 'inline-block';
-                    verifyBtn.style.display = 'none';
-                }, 500);
-            }, 3000);
-        });
+        // Function to update loading information
+        function updateLoadingInfo(processed, total) {
+            const loadingElement = document.getElementById('loading');
+            if (isLoading) {
+                loadingElement.textContent = `Processing markers: ${processed}/${total}`;
+            }
+        }
 
-        // File upload handling - FIXED VERSION
-        // ===== FILE UPLOAD FIX =====
-        document.getElementById('upload-btn').addEventListener('click', () => {
-            document.getElementById('csv-file').click();
-        });
-
-        document.getElementById('csv-file').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            // Show loading ONLY when file is selected
+        // Function to load CSV data
+        function loadCSVData() {
             const loadingElement = document.getElementById('loading');
             loadingElement.style.display = 'block';
-            loadingElement.textContent = 'Loading data...';
-            
-            document.getElementById('file-info').textContent = `Loaded: ${file.name}`;
-            
-            Papa.parse(file, {
+            isLoading = true;
+
+            Papa.parse('/static/deployments_with_coords.csv', {
+                download: true,
                 header: true,
                 skipEmptyLines: true,
                 complete: function(results) {
-                    allData = results.data.filter(item => item.City && item.State);
-                    loadingElement.style.display = 'none';
+                    // Process the data
+                    allData = results.data.map(item => {
+                        return {
+                            city: item.City,
+                            state: item.State,
+                            agency: item.Agency,
+                            technology: item.Technology,
+                            vendor: item.Vendor,
+                            summary: item.Summary,
+                            link: item.Link,
+                            lat: parseFloat(item.Latitude),
+                            lng: parseFloat(item.Longitude)
+                        };
+                    }).filter(item => !isNaN(item.lat) && !isNaN(item.lng));
+
                     document.getElementById('total-items').textContent = allData.length;
+                    loadingElement.style.display = 'none';
                     currentPage = 1;
-                    updateTableAndMap();
+                    isLoading = false;
+
+                    // Create heatmap from all data
+                    updateHeatmap();
+
+                    // Update table and pagination
+                    updateTable();
+                    updatePaginationControls();
+
+                    // Add markers to map
+                    addMarkersToMap();
                 },
                 error: function(error) {
-                    console.error('Error parsing CSV:', error);
-                    loadingElement.textContent = 'Error loading file. Please try again.';
+                    console.error('Error loading CSV:', error);
+                    loadingElement.textContent = 'Error loading data. Please try again.';
+                    isLoading = false;
                 }
             });
-        });
-
-        // Pagination controls
-        document.getElementById('prev-page').addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                updateTableAndMap();
-            }
-        });
-
-        document.getElementById('next-page').addEventListener('click', () => {
-            const totalPages = Math.ceil(allData.length / ITEMS_PER_PAGE);
-            if (currentPage < totalPages) {
-                currentPage++;
-                updateTableAndMap();
-            }
-        });
-
-        function updateTableAndMap() {
-            updateTable();
-            updateMap();
-            updatePaginationControls();
         }
 
+        // Function to add markers to the map
+        function addMarkersToMap() {
+            markersCluster.clearLayers();
+            
+            allData.forEach(item => {
+                if (item.lat && item.lng) {
+                    const marker = L.marker([item.lat, item.lng]);
+                    marker.bindPopup(`
+                        <div class="popup-content">
+                            <h3>${item.agency}</h3>
+                            <p><strong>Location:</strong> ${item.city}, ${item.state}</p>
+                            <p><strong>Technology:</strong> ${item.technology}</p>
+                            <p><strong>Vendor:</strong> ${item.vendor}</p>
+                            ${item.summary ? `<p>${item.summary}</p>` : ''}
+                            ${item.link ? `<a href="${item.link}" target="_blank" class="popup-link">More Info</a>` : ''}
+                        </div>
+                    `);
+                    markersCluster.addLayer(marker);
+                }
+            });
+        }
+
+        // Function to update heatmap
+        function updateHeatmap() {
+            // Remove heat layer if exists
+            if (heatLayer) {
+                map.removeLayer(heatLayer);
+            }
+
+            // Create heatmap points from all data
+            const heatPoints = allData
+                .filter(item => item.lat && item.lng)
+                .map(item => [item.lat, item.lng, 0.5]);
+
+            heatLayer = L.heatLayer(heatPoints, {
+                radius: 25,
+                blur: 15,
+                maxZoom: 12,
+                gradient: {
+                    0.4: 'blue',
+                    0.6: 'cyan',
+                    0.7: 'lime',
+                    0.8: 'yellow',
+                    1.0: 'red'
+                }
+            }).addTo(map);
+        }
+
+        // Function to update table
         function updateTable() {
             const table = document.getElementById('table');
             const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -1017,18 +868,26 @@
             // Clear existing rows (except header)
             const rows = document.querySelectorAll('.table-row:not(.table-header)');
             rows.forEach(row => row.remove());
-            
+
             // Add new rows
             pageData.forEach(item => {
                 const row = document.createElement('div');
                 row.className = 'table-row';
                 row.innerHTML = `
-                    <div>${item.City}</div>
-                    <div>${item.State}</div>
-                    <div>${item.Technology || 'N/A'}</div>
-                    <div>${item.Vendor || 'N/A'}</div>
-                    <div>${item['Link 1 Date'] || 'N/A'}</div>
+                    <div>${item.city || 'N/A'}</div>
+                    <div>${item.state || 'N/A'}</div>
+                    <div>${item.agency || 'N/A'}</div>
+                    <div>${item.technology || 'N/A'}</div>
+                    <div>${item.vendor || 'N/A'}</div>
                 `;
+
+                // Add click handler to highlight on map
+                row.addEventListener('click', () => {
+                    if (item.lat && item.lng) {
+                        map.setView([item.lat, item.lng], 12);
+                    }
+                });
+
                 table.appendChild(row);
             });
 
@@ -1037,98 +896,34 @@
             document.getElementById('end-item').textContent = Math.min(endIdx, allData.length);
         }
 
-        function updateMap() {
-            // Clear existing markers
-            markersCluster.clearLayers();
-
-            const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-            const endIdx = startIdx + ITEMS_PER_PAGE;
-            const pageData = allData.slice(startIdx, endIdx);
-
-            // If we have more than MAX_MAP_MARKERS, sample randomly
-            const displayData = pageData.length > MAX_MAP_MARKERS 
-                ? getRandomSubset(pageData, MAX_MAP_MARKERS) 
-                : pageData;
-
-            // Add markers to cluster group
-            displayData.forEach(item => {
-                addMarkerToMap(item);
-            });
-        }
-
-        function getRandomSubset(array, size) {
-            const shuffled = [...array];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            return shuffled.slice(0, size);
-        }
-
+        // Function to update pagination controls
         function updatePaginationControls() {
             const totalPages = Math.ceil(allData.length / ITEMS_PER_PAGE);
             document.getElementById('prev-page').disabled = currentPage <= 1;
             document.getElementById('next-page').disabled = currentPage >= totalPages;
         }
 
-        async function addMarkerToMap(item) {
-            try {
-                const coords = await geocodeLocation(item.City, item.State);
-                if (coords.lat && coords.lng) {
-                    const marker = L.marker([coords.lat, coords.lng]);
-                    marker.bindPopup(createPopupContent(item));
-                    markersCluster.addLayer(marker);
-                }
-            } catch (error) {
-                console.error('Error geocoding:', item.City, item.State, error);
-                // Fallback to random nearby coordinates if geocoding fails
-                const fallback = getFallbackCoords();
-                const marker = L.marker([fallback.lat, fallback.lng]);
-                marker.bindPopup(createPopupContent(item));
-                markersCluster.addLayer(marker);
+        // Pagination event listeners
+        document.getElementById('prev-page').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                updateTable();
+                updatePaginationControls();
             }
-        }
+        });
 
-        function createPopupContent(item) {
-            return `
-                <div class="popup-content">
-                    <h3>${item.City}, ${item.State}</h3>
-                    <p><strong>Agency:</strong> ${item.Agency || 'N/A'}</p>
-                    <p><strong>Technology:</strong> ${item.Technology || 'N/A'}</p>
-                    <p><strong>Vendor:</strong> ${item.Vendor || 'N/A'}</p>
-                    <p><strong>Date:</strong> ${item['Link 1 Date'] || 'N/A'}</p>
-                    ${item['Link 1'] ? `<a href="${item['Link 1']}" target="_blank" class="popup-link">Source Article</a>` : ''}
-                </div>
-            `;
-        }
-
-        async function geocodeLocation(city, state) {
-            try {
-                const response = await fetch(
-                    `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(city)}&state=${encodeURIComponent(state)}&country=US&format=json`
-                );
-                
-                if (!response.ok) throw new Error('Geocoding failed');
-                
-                const data = await response.json();
-                if (data.length > 0) {
-                    return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
-                }
-                throw new Error('No results found');
-            } catch (error) {
-                console.error('Geocoding error:', error);
-                return getFallbackCoords();
+        document.getElementById('next-page').addEventListener('click', () => {
+            const totalPages = Math.ceil(allData.length / ITEMS_PER_PAGE);
+            if (currentPage < totalPages) {
+                currentPage++;
+                updateTable();
+                updatePaginationControls();
             }
-        }
+        });
 
-        function getFallbackCoords() {
-            return {
-                lat: 37.8 + (Math.random() - 0.5) * 10,
-                lng: -96 + (Math.random() - 0.5) * 10
-            };
-        }
+        // Load data when the page loads
+        document.addEventListener('DOMContentLoaded', loadCSVData);
     </script>
 </body>
 </html>
-</div>
 {% endblock %}

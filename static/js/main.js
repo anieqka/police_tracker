@@ -5,6 +5,7 @@ let currentPage = 1;
 let allData = [];
 let markersCluster = null;
 
+
 // Initialize map
 function initMap() {
     const map = L.map('map').setView([37.8, -96], 4);
@@ -194,104 +195,111 @@ function initFlowerCursor() {
     });
 }
 
-function initHeartAnimation() {
-    // Heart pixel art pattern
-    const heartPattern = [
-        [0,0,1,1,0,0,1,1,0,0],
-        [0,1,1,1,1,1,1,1,1,0],
-        [1,1,1,1,1,1,1,1,1,1],
-        [1,1,1,1,1,1,1,1,1,1],
-        [1,1,1,1,1,1,1,1,1,1],
-        [0,1,1,1,1,1,1,1,1,0],
-        [0,0,1,1,1,1,1,1,0,0],
-        [0,0,0,1,1,1,1,0,0,0],
-        [0,0,0,0,1,1,0,0,0,0]
-    ];
+// Make heartPattern global
+const heartPattern = [
+    [0,0,1,1,0,0,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,0],
+    [1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1],
+    [0,1,1,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0]
+];
 
-    // Create pixel hearts for loading screen
-    const hearts = [
+// Make hearts array global
+let hearts = [];
+
+// Initialize everything when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    initializeHearts();
+    setupVerificationButton();
+    // Other initialization code...
+});
+
+function initializeHearts() {
+    hearts = [
         document.getElementById('heart1'),
         document.getElementById('heart2'),
         document.getElementById('heart3')
-    ].filter(Boolean); // Filter out null elements
+    ];
 
-    // Create each heart
     hearts.forEach(heart => {
-        // Clear any existing content
         heart.innerHTML = '';
+        heart.style.width = '50px';
+        heart.style.height = '50px';
+        heart.style.position = 'relative';
         
         heartPattern.forEach((row, rowIndex) => {
             row.forEach((pixel, colIndex) => {
                 if (pixel === 1) {
                     const pixelElement = document.createElement('div');
                     pixelElement.classList.add('pixel');
+                    pixelElement.style.position = 'absolute';
+                    pixelElement.style.width = '5px';
+                    pixelElement.style.height = '5px';
                     pixelElement.style.left = `${colIndex * 5}px`;
                     pixelElement.style.top = `${rowIndex * 5}px`;
+                    pixelElement.style.backgroundColor = 'var(--primary-pink)';
                     heart.appendChild(pixelElement);
                 }
             });
         });
+        heart.style.opacity = '0';
     });
 }
 
-function initVerification() {
-    const verifyBtn = document.getElementById('verify-btn');
-    if (!verifyBtn) return;
-
-    verifyBtn.addEventListener('click', function() {
+function setupVerificationButton() {
+    document.getElementById('verify-btn').addEventListener('click', function() {
         const loadingScreen = document.getElementById('loading-screen');
+        const verifyBtn = document.getElementById('verify-btn');
         const verificationMessage = document.getElementById('verification-message');
         const uploadBtn = document.getElementById('upload-btn');
         const imageContainer = document.querySelector('.image-container');
         
-        // Show loading screen
         loadingScreen.classList.add('active');
+        document.getElementById('loading-text').textContent = "LOADING...";
         
         // Start heart animation
-        const heartAnimationInterval = animateHearts();
+        const heartAnimation = animateHearts();
         
-        // After 3 seconds, complete verification
         setTimeout(() => {
-            // Update loading text
-            const loadingText = document.getElementById('loading-text');
-            if (loadingText) loadingText.textContent = "VERIFIED!";
+            document.getElementById('loading-text').textContent = "VERIFIED!";
             
-            // Show all hearts
-            document.querySelectorAll('.pixel-heart').forEach(heart => {
+            // Show all hearts at full opacity
+            hearts.forEach(heart => {
                 heart.style.opacity = '1';
+                heart.style.transform = 'scale(1)';
             });
             
-            // After brief delay, hide loading screen and show success
             setTimeout(() => {
-                // Stop heart animation
-                clearInterval(heartAnimationInterval);
-                
-                // Hide loading screen
+                clearInterval(heartAnimation);
                 loadingScreen.classList.remove('active');
-                
-                // Show verification success UI
-                if (imageContainer) imageContainer.classList.add('active');
-                if (verificationMessage) verificationMessage.style.display = 'block';
-                if (uploadBtn) uploadBtn.style.display = 'inline-block';
-                if (verifyBtn) verifyBtn.style.display = 'none';
+                imageContainer.classList.add('active');
+                verificationMessage.style.display = 'block';
+                uploadBtn.style.display = 'inline-block';
+                verifyBtn.style.display = 'none';
             }, 500);
         }, 3000);
     });
 }
 
 function animateHearts() {
-    const hearts = document.querySelectorAll('.pixel-heart');
     let step = 0;
     return setInterval(() => {
-        // Update heart visibility based on step
         hearts.forEach((heart, index) => {
-            heart.style.opacity = index < step ? '1' : '0';
+            if (index < step) {
+                heart.style.opacity = '1';
+                heart.style.transform = 'scale(1)';
+            } else {
+                heart.style.opacity = '0';
+                heart.style.transform = 'scale(0.5)';
+            }
         });
         
-        // Cycle through steps (0, 1, 2, 3, 0, 1, etc.)
-        step = (step + 1) % 4;
+        step = (step + 1) % (hearts.length + 1);
         
-        // Add a little delay when all hearts are hidden
         if (step === 0) {
             setTimeout(() => {
                 step = 1;
@@ -299,6 +307,5 @@ function animateHearts() {
         }
     }, 500);
 }
-
 // Rest of your table and map update functions remain the same
 // (updateTableAndMap, updateTable, updateMap, etc.)

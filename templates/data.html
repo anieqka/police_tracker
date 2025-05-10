@@ -1,935 +1,1480 @@
-{% extends "base.html" %}
-
-{% block title %}DATA WARS | POLICE TECH ATLAS{% endblock %}
-
-{% block extra_css %}
-<link href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&display=swap" rel="stylesheet">
-<style>
-    /* NEW GIRLY RETRO COLOR PALETTE */
-    :root {
-        --primary-pink: #ff6bb4;
-        --secondary-pink: #ff8cc3;
-        --light-pink: #ffcce6;
-        --dark-pink: #d94d8c;
-        --text-pink: #ffe6f2;
-        --dark-bg: #1a0022;
-        --neon-blue: #00d9ff;
-        --accent-purple: #9966ff;
-    }
-
-    body {
-        background-color: var(--dark-bg);
-        background-image: 
-            linear-gradient(rgba(255, 107, 180, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 107, 180, 0.1) 1px, transparent 1px);
-        background-size: 20px 20px;
-        color: var(--text-pink);
-        font-family: 'DotGothic16', sans-serif;
-        margin: 0;
-        padding: 0;
-        transition: all 0.3s ease;
-    }
-
-    /* IMPROVED NAVIGATION WITH BETTER UX */
-    .navbar {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 15px 0;
-        background: rgba(26, 0, 34, 0.8);
-        border-bottom: 2px solid var(--primary-pink);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(255, 107, 180, 0.3);
-    }
-
-    .navbar a {
-        color: var(--text-pink);
-        font-family: 'DotGothic16', sans-serif;
-        text-decoration: none;
-        margin: 0 15px;
-        padding: 8px 15px;
-        position: relative;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-        border-radius: 4px;
-    }
-
-    .navbar a::before {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 2px;
-        bottom: 0;
-        left: 0;
-        background: var(--primary-pink);
-        transform: scaleX(0);
-        transition: transform 0.3s ease;
-    }
-
-    .navbar a:hover, .navbar a.active {
-        color: var(--light-pink);
-        background-color: rgba(255, 107, 180, 0.2);
-        text-shadow: 0 0 5px var(--primary-pink);
-    }
-
-    .navbar a:hover::before, .navbar a.active::before {
-        transform: scaleX(1);
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-        position: relative;
-    }
-
-    /* IMPROVED SCANLINE EFFECT FOR BETTER VISIBILITY */
-    .container::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(
-            rgba(255, 107, 180, 0.03) 1px, 
-            transparent 1px
-        );
-        background-size: 100% 3px;
-        pointer-events: none;
-        z-index: 9999;
-        animation: scanline 8s linear infinite;
-        opacity: 0.7;
-    }
-
-    @keyframes scanline {
-        0% { transform: translateY(0%); }
-        100% { transform: translateY(100%); }
-    }
-
-    /* GLITCH HEADER WITH IMPROVED READABILITY */
-    .data-header {
-        text-align: center;
-        margin: 2rem 0 4rem;
-        position: relative;
-        background: var(--dark-bg);
-        border: 4px solid var(--primary-pink);
-        padding: 2rem;
-        box-shadow: 
-            0 0 10px var(--primary-pink),
-            0 0 20px var(--secondary-pink),
-            inset 0 0 10px var(--primary-pink);
-        text-transform: uppercase;
-        border-radius: 8px;
-    }
-
-    .data-header h1 {
-        font-family: 'Press Start 2P', cursive;
-        color: var(--primary-pink);
-        text-shadow: 
-            3px 3px 0 var(--dark-pink),
-            6px 6px 0 rgba(0, 0, 0, 0.3);
-        font-size: 2.8rem;
-        margin: 0;
-        letter-spacing: -1px;
-        position: relative;
-        animation: glitch 5s infinite alternate;
-    }
-
-    @keyframes glitch {
-        0%, 100% { transform: translate(0); }
-        20% { transform: translate(-2px, 2px); color: var(--secondary-pink); }
-        40% { transform: translate(-2px, -2px); }
-        60% { transform: translate(2px, 2px); color: var(--primary-pink); }
-        80% { transform: translate(2px, -2px); }
-    }
-
-    .data-subtitle {
-        font-family: 'DotGothic16', sans-serif;
-        color: var(--neon-blue);
-        font-size: 1.5rem;
-        margin: 1rem 0 0;
-        text-shadow: 0 0 5px var(--neon-blue);
-        letter-spacing: 3px;
-    }
-
-    /* IMPROVED CARD LAYOUT WITH BETTER SPACING */
-    .comparison-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-        margin: 3rem 0;
-    }
-
-    .dataset-card {
-        background: rgba(26, 0, 34, 0.8);
-        border: 3px solid var(--primary-pink);
-        padding: 2rem;
-        position: relative;
-        box-shadow: 
-            0 0 15px var(--primary-pink),
-            inset 0 0 10px var(--secondary-pink);
-        transition: all 0.3s;
-        border-radius: 8px;
-    }
-
-    .dataset-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 
-            0 5px 25px var(--primary-pink),
-            inset 0 0 15px var(--secondary-pink);
-    }
-
-    .dataset-card h2 {
-        font-family: 'Press Start 2P', cursive;
-        color: var(--primary-pink);
-        font-size: 1.4rem;
-        margin: 0 0 1.5rem;
-        text-shadow: 2px 2px 0 var(--dark-pink);
-        border-bottom: 3px dotted var(--neon-blue);
-        padding-bottom: 1rem;
-    }
-
-    /* IMPROVED STATS GRID WITH BETTER VISUAL HIERARCHY */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        margin: 2rem 0;
-    }
-
-    .stat-item {
-        background: rgba(26, 0, 34, 0.7);
-        padding: 1.2rem;
-        border-left: 4px solid var(--neon-blue);
-        box-shadow: 
-            inset 0 0 10px rgba(0, 217, 255, 0.2),
-            0 0 5px rgba(0, 217, 255, 0.3);
-        border-radius: 4px;
-        transition: all 0.3s;
-    }
-
-    .stat-item:hover {
-        background: rgba(26, 0, 34, 0.9);
-        transform: translateY(-3px);
-        box-shadow: 
-            inset 0 0 15px rgba(0, 217, 255, 0.3),
-            0 5px 10px rgba(0, 217, 255, 0.2);
-    }
-
-    .stat-value {
-        font-family: 'Press Start 2P', cursive;
-        color: var(--primary-pink);
-        font-size: 1.8rem;
-        margin-bottom: 0.5rem;
-        text-shadow: 2px 2px 0 var(--dark-pink);
-        display: block;
-    }
-
-    .stat-label {
-        font-family: 'DotGothic16', sans-serif;
-        color: var(--neon-blue);
-        font-size: 0.9rem;
-        letter-spacing: 1px;
-    }
-
-    /* IMPROVED TECH BADGES WITH BETTER CONTRAST */
-    .tech-badge {
-        display: inline-block;
-        background: rgba(26, 0, 34, 0.9);
-        color: var(--text-pink);
-        font-family: 'DotGothic16', sans-serif;
-        padding: 0.5rem 1rem;
-        margin: 0.5rem 0.5rem 0.5rem 0;
-        font-size: 0.9rem;
-        border: 2px solid var(--primary-pink);
-        box-shadow: 
-            2px 2px 0 var(--dark-pink),
-            inset 0 0 5px var(--secondary-pink);
-        position: relative;
-        overflow: hidden;
-        border-radius: 4px;
-        transition: all 0.2s;
-        cursor: pointer;
-    }
-
-    .tech-badge:hover {
-        transform: translateY(-2px);
-        background: rgba(255, 107, 180, 0.2);
-        color: var(--light-pink);
-    }
-
-    .tech-badge::after {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        right: -50%;
-        bottom: -50%;
-        background: linear-gradient(
-            to bottom right,
-            transparent 45%,
-            rgba(255, 107, 180, 0.3) 50%,
-            transparent 55%
-        );
-        transform: rotate(30deg);
-        animation: shine 3s infinite;
-    }
-
-    @keyframes shine {
-        0% { transform: translateX(-100%) rotate(30deg); }
-        100% { transform: translateX(100%) rotate(30deg); }
-    }
-
-    /* IMPROVED CHART CONTAINERS */
-    .chart-container {
-        background: rgba(26, 0, 34, 0.8);
-        padding: 2rem;
-        margin: 3rem 0;
-        border: 3px solid var(--primary-pink);
-        box-shadow: 
-            0 0 15px var(--primary-pink),
-            inset 0 0 10px var(--secondary-pink);
-        position: relative;
-        border-radius: 8px;
-    }
-
-    .chart-container::before {
-        content: "";
-        position: absolute;
-        top: 5px;
-        left: 5px;
-        right: 5px;
-        bottom: 5px;
-        border: 1px dashed var(--neon-blue);
-        pointer-events: none;
-        border-radius: 5px;
-    }
-
-    .chart-title {
-        font-family: 'Press Start 2P', cursive;
-        color: var(--primary-pink);
-        text-align: center;
-        margin-bottom: 2rem;
-        text-shadow: 2px 2px 0 var(--dark-pink);
-        font-size: 1.4rem;
-        letter-spacing: -1px;
-    }
-
-    /* IMPROVED DATA TABLE WITH BETTER READABILITY */
-    .data-table {
-        width: 100%;
-        font-family: 'DotGothic16', sans-serif;
-        color: var(--text-pink);
-        border-collapse: separate;
-        border-spacing: 0;
-        border: 3px solid var(--primary-pink);
-        margin-top: 1.5rem;
-        border-radius: 5px;
-        overflow: hidden;
-    }
-
-    .data-table th {
-        background: rgba(255, 107, 180, 0.3);
-        padding: 1rem;
-        border: 1px solid var(--primary-pink);
-        text-align: left;
-        font-size: 1.1rem;
-        color: var(--light-pink);
-        text-shadow: 0 0 5px var(--primary-pink);
-    }
-
-    .data-table td {
-        padding: 1rem;
-        border: 1px solid var(--secondary-pink);
-        background: rgba(26, 0, 34, 0.7);
-        transition: background 0.3s;
-    }
-
-    .data-table tr:hover td {
-        background: rgba(255, 107, 180, 0.1);
-    }
-
-    .data-table tr:nth-child(even) td {
-        background: rgba(26, 0, 34, 0.9);
-    }
-
-    .data-table tr:nth-child(even):hover td {
-        background: rgba(255, 107, 180, 0.1);
-    }
-
-    /* LOADING EFFECTS */
-    @keyframes battleFlash {
-        0% { 
-            box-shadow: 0 0 10px var(--primary-pink);
-            background: rgba(26, 0, 34, 0.8);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DATA WARS | POLICE TECH ATLAS</title>
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ff6bb4;
+            --secondary-pink: #ff8cc3;
+            --light-pink: #ffcce6;
+            --dark-pink: #d94d8c;
+            --text-pink: #ffe6f2;
+            --dark-bg: #1a0022;
+            --neon-blue: #00d9ff;
+            --accent-purple: #9966ff;
         }
-        50% { 
-            box-shadow: 0 0 30px var(--neon-blue);
-            background: rgba(0, 20, 40, 0.8);
+
+        /* Soft mode colors */
+        .soft-mode {
+            --primary-pink: #ff9ac8;
+            --secondary-pink: #ffb3d6;
+            --light-pink: #ffe6f2;
+            --dark-pink: #e673a5;
+            --text-pink: #33001a;
+            --dark-bg: #ffe6f5;
+            --neon-blue: #66ccff;
+            --accent-purple: #cc99ff;
         }
-        100% { 
-            box-shadow: 0 0 10px var(--primary-pink);
-            background: rgba(26, 0, 34, 0.8);
+
+        /* ===== COMMON STYLES ===== */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: var(--text-pink);
+            overflow-x: hidden;
+            position: relative;
+            background: 
+                linear-gradient(transparent 95%, rgba(255, 105, 180, 0.1) 96%),
+                linear-gradient(90deg, transparent 95%, rgba(255, 105, 180, 0.1) 96%);
+            background-size: 20px 20px;
+            background-color: var(--dark-bg);
+            transition: all 0.5s ease;
         }
-    }
 
-    .battle-highlight {
-        animation: battleFlash 0.5s 3;
-    }
-
-    /* IMPROVED BUTTON STYLES */
-    .pixel-button {
-        background: var(--dark-bg);
-        color: var(--primary-pink);
-        border: 2px solid var(--primary-pink);
-        font-family: 'Press Start 2P', cursive;
-        padding: 8px 15px;
-        font-size: 0.9rem;
-        cursor: pointer;
-        margin: 1rem 0;
-        transition: all 0.2s;
-        box-shadow: 3px 3px 0 var(--dark-pink);
-        position: relative;
-        overflow: hidden;
-        border-radius: 4px;
-    }
-
-    .pixel-button:hover {
-        background: rgba(255, 107, 180, 0.2);
-        color: var(--light-pink);
-        transform: translateY(-2px);
-        box-shadow: 5px 5px 0 var(--dark-pink);
-    }
-
-    .pixel-button:active {
-        transform: translateY(0);
-        box-shadow: 1px 1px 0 var(--dark-pink);
-    }
-
-    /* TOOLTIP STYLES */
-    .tooltip {
-        position: relative;
-        display: inline-block;
-    }
-
-    .tooltip .tooltip-text {
-        visibility: hidden;
-        width: 200px;
-        background-color: rgba(26, 0, 34, 0.95);
-        color: var(--light-pink);
-        text-align: center;
-        border-radius: 4px;
-        padding: 10px;
-        position: absolute;
-        z-index: 1;
-        bottom: 125%;
-        left: 50%;
-        margin-left: -100px;
-        opacity: 0;
-        transition: opacity 0.3s;
-        border: 2px solid var(--primary-pink);
-        box-shadow: 0 0 10px var(--primary-pink);
-        font-size: 0.9rem;
-    }
-
-    .tooltip:hover .tooltip-text {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    /* HELP BUTTON */
-    .help-button {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 50px;
-        height: 50px;
-        background: var(--primary-pink);
-        color: var(--dark-bg);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 1.5rem;
-        box-shadow: 0 0 15px var(--primary-pink);
-        cursor: pointer;
-        z-index: 1000;
-        transition: all 0.3s;
-        border: 2px solid var(--light-pink);
-    }
-
-    .help-button:hover {
-        transform: scale(1.1);
-        box-shadow: 0 0 20px var(--primary-pink);
-    }
-
-    /* MODAL STYLES */
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(26, 0, 34, 0.8);
-        z-index: 2000;
-        overflow: auto;
-    }
-
-    .modal-content {
-        background: var(--dark-bg);
-        margin: 10% auto;
-        padding: 2rem;
-        width: 80%;
-        max-width: 700px;
-        border: 3px solid var(--primary-pink);
-        box-shadow: 
-            0 0 15px var(--primary-pink),
-            inset 0 0 10px var(--secondary-pink);
-        position: relative;
-        border-radius: 8px;
-        color: var(--text-pink);
-    }
-
-    .close-modal {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        font-size: 2rem;
-        color: var(--primary-pink);
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .close-modal:hover {
-        color: var(--light-pink);
-        transform: rotate(90deg);
-    }
-    
-    /* LOADING INDICATOR */
-    .loading-bar {
-        width: 100%;
-        height: 10px;
-        background: var(--dark-bg);
-        border: 2px solid var(--primary-pink);
-        position: relative;
-        margin: 2rem 0;
-        overflow: hidden;
-        border-radius: 5px;
-    }
-
-    .loading-bar::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to right, 
-            transparent, 
-            var(--primary-pink), 
-            transparent);
-        animation: loading 2s infinite linear;
-    }
-
-    @keyframes loading {
-        0% { left: -100%; }
-        100% { left: 100%; }
-    }
-
-    /* RESPONSIVE IMPROVEMENTS */
-    @media (max-width: 768px) {
-        .comparison-grid {
-            grid-template-columns: 1fr;
+        /* Custom glowing cursor */
+        /* Flower cursor trail */
+        .flower-trail {
+            position: fixed;
+            width: 24px;
+            height: 24px;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s, transform 0.2s;
+            filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2));
         }
-        
-        .data-header h1 {
-            font-size: 1.8rem;
+
+        .cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 107, 180, 0.3);
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.3s ease;
         }
-        
-        .chart-title {
-            font-size: 1.2rem;
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        
-        .stats-grid {
-            grid-template-columns: 1fr;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
         }
-        
+
+        /* NAVBAR */
         .navbar {
-            flex-direction: column;
-            padding: 10px 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            margin-bottom: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            border-bottom: 3px solid var(--primary-pink);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            transition: all 0.5s ease;
         }
-        
+
+        .soft-mode .navbar {
+            background-color: rgba(255, 230, 245, 0.8);
+            box-shadow: 0 2px 10px rgba(255, 182, 193, 0.3);
+        }
+
         .navbar a {
-            margin: 5px 0;
-            width: 90%;
+            color: var(--text-pink);
+            text-decoration: none;
+            margin: 0 1rem;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0;
+            transition: all 0.3s;
+            font-family: 'DotGothic16', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .navbar a:hover {
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--accent-purple);
+        }
+
+        .navbar a::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-purple);
+            transition: width 0.3s;
+        }
+
+        .navbar a:hover::after {
+            width: 100%;
+        }
+
+        .navbar a.active {
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--accent-purple);
+        }
+
+        .navbar a.active::after {
+            width: 100%;
+        }
+
+        .navbar a[href="./data.html"] {
+            position: relative;
+        }
+
+        .navbar a[href="./data.html"]:hover {
+            color: #b4e0ff;
+            text-shadow: 0 0 8px #ff6bb4;
+        }
+
+        .navbar a[href="./data.html"]::after {
+            content: "NEW!";
+            position: absolute;
+            top: -10px;
+            right: -15px;
+            font-size: 0.6rem;
+            background: #ff6bb4;
+            color: black;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Press Start 2P';
+        }
+
+        /* Retro effects */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 182, 193, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 182, 193, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.5s ease;
+        }
+
+        .soft-mode .grid-overlay {
+            background-image: 
+                linear-gradient(rgba(255, 154, 200, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 154, 200, 0.1) 1px, transparent 1px);
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(
+                    rgba(0, 0, 0, 0) 50%, 
+                    rgba(0, 0, 0, 0.2) 50%
+                );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 9997;
+            animation: scanline 8s linear infinite;
+            transition: all 0.5s ease;
+        }
+
+        .soft-mode .scanlines {
+            background: 
+                linear-gradient(
+                    rgba(255, 230, 245, 0) 50%, 
+                    rgba(255, 182, 193, 0.1) 50%
+                );
+        }
+
+        @keyframes scanline {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
+
+        /* ===== DATA.HTML STYLES ===== */
+        .data-header {
             text-align: center;
+            margin: 2rem 0 4rem;
+            position: relative;
+            background: var(--dark-bg);
+            border: 4px solid var(--primary-pink);
+            padding: 2rem;
+            box-shadow: 
+                0 0 10px var(--primary-pink),
+                0 0 20px var(--secondary-pink),
+                inset 0 0 10px var(--primary-pink);
+            text-transform: uppercase;
+            border-radius: 8px;
+            transition: all 0.5s ease;
+        }
+
+        .soft-mode .data-header {
+            box-shadow: 
+                0 0 10px var(--primary-pink),
+                inset 0 0 10px var(--secondary-pink);
+        }
+
+        .data-header h1 {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--primary-pink);
+            text-shadow: 
+                3px 3px 0 var(--dark-pink),
+                6px 6px 0 rgba(0, 0, 0, 0.3);
+            font-size: 2.8rem;
+            margin: 0;
+            letter-spacing: -1px;
+            position: relative;
+            animation: glitch 5s infinite alternate;
+        }
+
+        .soft-mode .data-header h1 {
+            text-shadow: 
+                2px 2px 0 var(--dark-pink),
+                4px 4px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); color: var(--secondary-pink); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); color: var(--primary-pink); }
+            80% { transform: translate(2px, -2px); }
+        }
+
+        .data-subtitle {
+            font-family: 'DotGothic16', sans-serif;
+            color: var(--neon-blue);
+            font-size: 1.5rem;
+            margin: 1rem 0 0;
+            text-shadow: 0 0 5px var(--neon-blue);
+            letter-spacing: 3px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 3rem 0;
+        }
+
+        .dataset-card {
+            background: rgba(26, 0, 34, 0.8);
+            border: 3px solid var(--primary-pink);
+            padding: 2rem;
+            position: relative;
+            box-shadow: 
+                0 0 15px var(--primary-pink),
+                inset 0 0 10px var(--secondary-pink);
+            transition: all 0.3s;
+            border-radius: 8px;
+        }
+
+        .soft-mode .dataset-card {
+            background: rgba(255, 230, 245, 0.8);
+            box-shadow: 
+                0 0 10px var(--primary-pink),
+                inset 0 0 5px var(--secondary-pink);
+        }
+
+        .dataset-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 5px 25px var(--primary-pink),
+                inset 0 0 15px var(--secondary-pink);
+        }
+
+        .dataset-card h2 {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--primary-pink);
+            font-size: 1.4rem;
+            margin: 0 0 1.5rem;
+            text-shadow: 2px 2px 0 var(--dark-pink);
+            border-bottom: 3px dotted var(--neon-blue);
+            padding-bottom: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-item {
+            background: rgba(26, 0, 34, 0.7);
+            padding: 1.2rem;
+            border-left: 4px solid var(--neon-blue);
+            box-shadow: 
+                inset 0 0 10px rgba(0, 217, 255, 0.2),
+                0 0 5px rgba(0, 217, 255, 0.3);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .soft-mode .stat-item {
+            background: rgba(255, 230, 245, 0.7);
+            box-shadow: 
+                inset 0 0 5px rgba(0, 217, 255, 0.1),
+                0 0 3px rgba(0, 217, 255, 0.2);
+        }
+
+        .stat-item:hover {
+            background: rgba(26, 0, 34, 0.9);
+            transform: translateY(-3px);
+            box-shadow: 
+                inset 0 0 15px rgba(0, 217, 255, 0.3),
+                0 5px 10px rgba(0, 217, 255, 0.2);
+        }
+
+        .soft-mode .stat-item:hover {
+            background: rgba(255, 230, 245, 0.9);
+        }
+
+        .stat-value {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--primary-pink);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 0 var(--dark-pink);
+            display: block;
+        }
+
+        .stat-label {
+            font-family: 'DotGothic16', sans-serif;
+            color: var(--neon-blue);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            background: rgba(26, 0, 34, 0.9);
+            color: var(--text-pink);
+            font-family: 'DotGothic16', sans-serif;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            font-size: 0.9rem;
+            border: 2px solid var(--primary-pink);
+            box-shadow: 
+                2px 2px 0 var(--dark-pink),
+                inset 0 0 5px var(--secondary-pink);
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .soft-mode .tech-badge {
+            background: rgba(255, 230, 245, 0.9);
+            color: var(--dark-bg);
+        }
+
+        .tech-badge:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 107, 180, 0.2);
+            color: var(--light-pink);
+        }
+
+        .tech-badge::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 45%,
+                rgba(255, 107, 180, 0.3) 50%,
+                transparent 55%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        .chart-container {
+            background: rgba(26, 0, 34, 0.8);
+            padding: 1rem;
+            margin: 2rem 0;
+            border: 3px solid var(--primary-pink);
+            box-shadow: 
+                0 0 15px var(--primary-pink),
+                inset 0 0 10px var(--secondary-pink);
+            position: relative;
+            border-radius: 8px;
+            height: 400px;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .soft-mode .chart-container {
+            background: rgba(255, 230, 245, 0.8);
+            box-shadow: 
+                0 0 10px var(--primary-pink),
+                inset 0 0 5px var(--secondary-pink);
+        }
+
+        .chart-title {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--primary-pink);
+            text-align: center;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 0 var(--dark-pink);
+            font-size: 1.2rem;
+            letter-spacing: -1px;
+        }
+
+        .data-table-container {
+            max-height: 500px;
+            overflow-y: auto;
+            position: relative;
         }
         
+        .data-table {
+            width: 100%;
+            font-family: 'DotGothic16', sans-serif;
+            color: var(--text-pink);
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 3px solid var(--primary-pink);
+            border-radius: 5px;
+        }
+        
+        .data-table thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .data-table th {
+            background: rgba(255, 107, 180, 0.3);
+            padding: 1rem;
+            border: 1px solid var(--primary-pink);
+            text-align: left;
+            font-size: 1.1rem;
+            color: var(--light-pink);
+            text-shadow: 0 0 5px var(--primary-pink);
+        }
+
+        .soft-mode .data-table th {
+            background: rgba(255, 154, 200, 0.5);
+            color: var(--dark-bg);
+            text-shadow: none;
+        }
+        
+        .data-table td {
+            padding: 1rem;
+            border: 1px solid var(--secondary-pink);
+            background: rgba(26, 0, 34, 0.7);
+            transition: background 0.3s;
+        }
+
+        .soft-mode .data-table td {
+            background: rgba(255, 230, 245, 0.7);
+            color: var(--dark-bg);
+        }
+        
+        .data-table tr:hover td {
+            background: rgba(255, 107, 180, 0.1);
+        }
+
+        .soft-mode .data-table tr:hover td {
+            background: rgba(255, 154, 200, 0.3);
+        }
+
+        .pagination-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .page-size-selector {
+            background: var(--dark-bg);
+            color: var(--primary-pink);
+            border: 2px solid var(--primary-pink);
+            font-family: 'DotGothic16', sans-serif;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .soft-mode .page-size-selector {
+            background: var(--light-pink);
+            color: var(--dark-bg);
+        }
+        
+        .data-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 0, 34, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .soft-mode .data-loading {
+            background: rgba(255, 230, 245, 0.8);
+        }
+        
+        .loading-spinner {
+            border: 4px solid var(--primary-pink);
+            border-top: 4px solid var(--neon-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .sampling-controls {
+            background: rgba(26, 0, 34, 0.9);
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 2px solid var(--neon-blue);
+            border-radius: 4px;
+            transition: all 0.5s ease;
+        }
+
+        .soft-mode .sampling-controls {
+            background: rgba(255, 230, 245, 0.9);
+        }
+        
+        .sampling-controls label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--neon-blue);
+        }
+        
+        .sampling-controls select, 
+        .sampling-controls input {
+            background: var(--dark-bg);
+            color: var(--text-pink);
+            border: 2px solid var(--primary-pink);
+            padding: 0.5rem;
+            font-family: 'DotGothic16', sans-serif;
+            margin-right: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .soft-mode .sampling-controls select,
+        .soft-mode .sampling-controls input {
+            background: var(--light-pink);
+            color: var(--dark-bg);
+        }
+
+        .pixel-button {
+            background: var(--dark-bg);
+            color: var(--primary-pink);
+            border: 2px solid var(--primary-pink);
+            font-family: 'Press Start 2P', cursive;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin: 1rem 0;
+            transition: all 0.2s;
+            box-shadow: 3px 3px 0 var(--dark-pink);
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+
+        .soft-mode .pixel-button {
+            background: var(--light-pink);
+            color: var(--dark-bg);
+        }
+
+        .pixel-button:hover {
+            background: rgba(255, 107, 180, 0.2);
+            color: var(--light-pink);
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 0 var(--dark-pink);
+        }
+
+        .soft-mode .pixel-button:hover {
+            background: rgba(255, 154, 200, 0.5);
+            color: var(--dark-bg);
+        }
+
+        .pixel-button:active {
+            transform: translateY(0);
+            box-shadow: 1px 1px 0 var(--dark-pink);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: rgba(26, 0, 34, 0.95);
+            color: var(--light-pink);
+            text-align: center;
+            border-radius: 4px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border: 2px solid var(--primary-pink);
+            box-shadow: 0 0 10px var(--primary-pink);
+            font-size: 0.9rem;
+        }
+
+        .soft-mode .tooltip .tooltip-text {
+            background-color: rgba(255, 230, 245, 0.95);
+            color: var(--dark-bg);
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .help-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-pink);
+            color: var(--dark-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.5rem;
+            box-shadow: 0 0 15px var(--primary-pink);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+            border: 2px solid var(--light-pink);
+        }
+
+        .help-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--primary-pink);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 0, 34, 0.8);
+            z-index: 2000;
+            overflow: auto;
+        }
+
+        .soft-mode .modal {
+            background: rgba(255, 182, 193, 0.8);
+        }
+
         .modal-content {
-            width: 95%;
-            margin: 5% auto;
+            background: var(--dark-bg);
+            margin: 10% auto;
+            padding: 2rem;
+            width: 80%;
+            max-width: 700px;
+            border: 3px solid var(--primary-pink);
+            box-shadow: 
+                0 0 15px var(--primary-pink),
+                inset 0 0 10px var(--secondary-pink);
+            position: relative;
+            border-radius: 8px;
+            color: var(--text-pink);
+            transition: all 0.5s ease;
         }
-    }
-    
-    /* DARK MODE TOGGLE */
-    .mode-toggle {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 1000;
-        cursor: pointer;
-        background: var(--dark-bg);
-        border: 2px solid var(--primary-pink);
-        color: var(--primary-pink);
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-family: 'DotGothic16', sans-serif;
-        font-size: 0.8rem;
-        transition: all 0.3s;
-    }
-    
-    .mode-toggle:hover {
-        background: rgba(255, 107, 180, 0.2);
-        transform: translateY(-2px);
-    }
-    
-    /* PAGINATION */
-    .pagination {
-        display: flex;
-        justify-content: center;
-        margin: 2rem 0;
-    }
-    
-    .page-button {
-        margin: 0 5px;
-        padding: 5px 12px;
-        background: var(--dark-bg);
-        border: 2px solid var(--primary-pink);
-        color: var(--primary-pink);
-        font-family: 'Press Start 2P', cursive;
-        font-size: 0.8rem;
-        cursor: pointer;
-        transition: all 0.2s;
-        border-radius: 4px;
-    }
-    
-    .page-button.active {
-        background: var(--primary-pink);
-        color: var(--dark-bg);
-    }
-    
-    .page-button:hover:not(.active) {
-        background: rgba(255, 107, 180, 0.2);
-        transform: translateY(-2px);
-    }
-</style>
-{% endblock %}
 
-{% block content %}
-<div class="container">
-    <!-- NAVIGATION BAR -->
-    <nav class="navbar">
-        <a href="#" class="active">DATA WARS</a>
-        <a href="#">SURVEILLANCE</a>
-        <a href="#">NETWORKS</a>
-        <a href="#">ABOUT</a>
-    </nav>
+        .soft-mode .modal-content {
+            background: var(--light-pink);
+            color: var(--dark-bg);
+        }
 
-    <!-- MODE TOGGLE -->
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 2rem;
+            color: var(--primary-pink);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--light-pink);
+            transform: rotate(90deg);
+        }
+
+        .loading-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-pink);
+            position: relative;
+            margin: 2rem 0;
+            overflow: hidden;
+            border-radius: 5px;
+        }
+
+        .soft-mode .loading-bar {
+            background: var(--light-pink);
+        }
+
+        .loading-bar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, 
+                transparent, 
+                var(--primary-pink), 
+                transparent);
+            animation: loading 2s infinite linear;
+        }
+
+        @keyframes loading {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            cursor: pointer;
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-pink);
+            color: var(--primary-pink);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-family: 'DotGothic16', sans-serif;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        
+        .mode-toggle:hover {
+            background: rgba(255, 107, 180, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .soft-mode .mode-toggle {
+            background: var(--light-pink);
+            color: var(--dark-bg);
+        }
+
+        .page-button {
+            margin: 0 5px;
+            padding: 5px 12px;
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-pink);
+            color: var(--primary-pink);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        .soft-mode .page-button {
+            background: var(--light-pink);
+            color: var(--dark-bg);
+        }
+        
+        .page-button.active {
+            background: var(--primary-pink);
+            color: var(--dark-bg);
+        }
+        
+        .page-button:hover:not(.active) {
+            background: rgba(255, 107, 180, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* About section */
+        .about-section {
+            background: rgba(26, 0, 34, 0.8);
+            border: 3px solid var(--primary-pink);
+            padding: 2rem;
+            margin: 3rem 0;
+            border-radius: 8px;
+            box-shadow: 
+                0 0 15px var(--primary-pink),
+                inset 0 0 10px var(--secondary-pink);
+            transition: all 0.5s ease;
+        }
+
+        .soft-mode .about-section {
+            background: rgba(255, 230, 245, 0.8);
+        }
+
+        .about-section h2 {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--primary-pink);
+            margin-top: 0;
+            text-shadow: 2px 2px 0 var(--dark-pink);
+        }
+
+        .about-section p {
+            font-family: 'DotGothic16', sans-serif;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-section ul {
+            padding-left: 1.5rem;
+        }
+
+        .about-section li {
+            margin-bottom: 0.8rem;
+            font-family: 'DotGothic16', sans-serif;
+        }
+
+        /* Data preview table */
+        .data-preview {
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+
+        .data-preview table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'DotGothic16', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .data-preview th, 
+        .data-preview td {
+            border: 1px solid var(--primary-pink);
+            padding: 8px;
+            text-align: left;
+        }
+
+        .data-preview th {
+            background: rgba(255, 107, 180, 0.3);
+            color: var(--light-pink);
+        }
+
+        .soft-mode .data-preview th {
+            background: rgba(255, 154, 200, 0.5);
+            color: var(--dark-bg);
+        }
+
+        .data-preview tr:nth-child(even) {
+            background: rgba(255, 107, 180, 0.1);
+        }
+
+        .soft-mode .data-preview tr:nth-child(even) {
+            background: rgba(255, 154, 200, 0.2);
+        }
+
+        .data-preview tr:hover {
+            background: rgba(255, 107, 180, 0.2);
+        }
+
+        .soft-mode .data-preview tr:hover {
+            background: rgba(255, 154, 200, 0.3);
+        }
+
+        /* Interactive elements */
+        .interactive-panel {
+            background: rgba(26, 0, 34, 0.8);
+            border: 3px solid var(--neon-blue);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            box-shadow: 
+                0 0 15px var(--neon-blue),
+                inset 0 0 10px rgba(0, 217, 255, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .soft-mode .interactive-panel {
+            background: rgba(255, 230, 245, 0.8);
+        }
+
+        .interactive-panel h3 {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--neon-blue);
+            margin-top: 0;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .interactive-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .interactive-button {
+            background: var(--dark-bg);
+            color: var(--neon-blue);
+            border: 2px solid var(--neon-blue);
+            font-family: 'Press Start 2P', cursive;
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        .soft-mode .interactive-button {
+            background: var(--light-pink);
+            color: var(--dark-bg);
+        }
+
+        .interactive-button:hover {
+            background: rgba(0, 217, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .soft-mode .interactive-button:hover {
+            background: rgba(102, 204, 255, 0.3);
+        }
+
+        /* 8-bit animations */
+        @keyframes pixelate {
+            0% { filter: blur(0px); }
+            50% { filter: blur(1px); }
+            100% { filter: blur(0px); }
+        }
+
+        .pixel-animation {
+            animation: pixelate 0.5s infinite;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .chart-title {
+                font-size: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                padding: 10px 0;
+            }
+            
+            .navbar a {
+                margin: 5px 0;
+                width: 90%;
+                text-align: center;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+
+            .mode-toggle {
+                top: 70px;
+                right: 10px;
+                font-size: 0.7rem;
+                padding: 3px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="flower" viewBox="0 0 100 100">
+            <path d="M50 20a5 5 0 0 1 5 5v20a5 5 0 0 1-10 0V25a5 5 0 0 1 5-5z" fill="#ff69b4"/>
+            <path d="M50 80a5 5 0 0 1 5-5h20a5 5 0 0 1 0 10H55a5 5 0 0 1-5-5z" fill="#ff69b4"/>
+            <path d="M20 50a5 5 0 0 1 5-5h20a5 5 0 0 1 0 10H25a5 5 0 0 1-5-5z" fill="#ff69b4"/>
+            <path d="M80 50a5 5 0 0 1-5 5H55a5 5 0 0 1 0-10h20a5 5 0 0 1 5 5z" fill="#ff69b4"/>
+            <circle cx="50" cy="50" r="15" fill="#ffb6c1"/>
+        </symbol>
+    </svg>
+    <!-- Custom cursor elements -->
+    <div class="custom-cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Retro effects -->
+    <div class="grid-overlay"></div>
+    <div class="scanlines"></div>
+
+    <!-- Theme toggle button -->
     <div class="mode-toggle" id="modeToggle">SOFTEN VISUALS</div>
-    
-    <!-- CYBERPUNK GLITCH HEADER -->
-    <header class="data-header">
-        <h1>DATA WARS</h1>
-        <p class="data-subtitle">
-            SYSTEMS ENGAGED
-        </p>
-    </header>
-    
-    <!-- LOADING BAR -->
-    <div class="loading-bar"></div>
-    
-    <!-- DATASET COMPARISON GRID -->
-    <div class="comparison-grid">
-        <!-- ATLAS CARD -->
-        <div class="dataset-card" id="atlas-card">
-            <h2>ATLAS NETWORK</h2>
-            <p class="data-subtitle">
-                SURVEILLANCE GRID STATUS
-            </p>
-            
-            <div class="stats-grid">
-                <div class="stat-item tooltip">
-                    <span class="stat-value" id="atlas-agencies">5,200+</span>
-                    <span class="stat-label">NODES ONLINE</span>
-                    <span class="tooltip-text">Active surveillance nodes in the ATLAS network</span>
-                </div>
-                <div class="stat-item tooltip">
-                    <span class="stat-value" id="atlas-states">48</span>
-                    <span class="stat-label">SECTORS</span>
-                    <span class="tooltip-text">Geographic sectors covered by the network</span>
-                </div>
-                <div class="stat-item tooltip">
-                    <span class="stat-value" id="atlas-tech">22</span>
-                    <span class="stat-label">MODULE TYPES</span>
-                    <span class="tooltip-text">Different surveillance technologies deployed</span>
-                </div>
-                <div class="stat-item tooltip">
-                    <span class="stat-value" id="atlas-year">2010</span>
-                    <span class="stat-label">INITIAL DEPLOY</span>
-                    <span class="tooltip-text">Year when the network was first activated</span>
-                </div>
-            </div>
-            
-            <h3 class="data-subtitle">
-                PRIMARY SYSTEMS:
-            </h3>
-            <div id="atlas-tech-badges">
-                <span class="tech-badge tooltip">VISUAL CAPTURE (65%)
-                    <span class="tooltip-text">Camera-based surveillance systems</span>
-                </span>
-                <span class="tech-badge tooltip">AUTO SCAN (45%)
-                    <span class="tooltip-text">Automated recognition and scanning</span>
-                </span>
-                <span class="tech-badge tooltip">AUDIO TRACK (28%)
-                    <span class="tooltip-text">Sound monitoring and analysis</span>
-                </span>
-            </div>
-            
-            <button class="pixel-button" id="atlas-detail-btn">VIEW DETAILS</button>
-        </div>
-        
-        <!-- BORDER CARD -->
-        <div class="dataset-card" id="border-card">
-            <h2>BORDER PROTOCOL</h2>
-            <p class="data-subtitle">
-                SECURITY GRID STATUS
-            </p>
-            
-            <div class="stats-grid">
-                <div class="stat-item tooltip">
-                    <span class="stat-value" id="border-agencies">87</span>
-                    <span class="stat-label">NODES ONLINE</span>
-                    <span class="tooltip-text">Active surveillance nodes at border locations</span>
-                </div>
-                <div class="stat-item tooltip">
-                    <span class="stat-value" id="border-states">4</span>
-                    <span class="stat-label">SECTORS</span>
-                    <span class="tooltip-text">Border regions covered by the network</span>
-                </div>
-                <div class="stat-item tooltip">
-                    <span class="stat-value" id="border-tech">14</span>
-                    <span class="stat-label">MODULE TYPES</span>
-                    <span class="tooltip-text">Different surveillance technologies deployed</span>
-                </div>
-                <div class="stat-item tooltip">
-                    <span class="stat-value" id="border-year">2014</span>
-                    <span class="stat-label">INITIAL DEPLOY</span>
-                    <span class="tooltip-text">Year when the border protocol was activated</span>
-                </div>
-            </div>
-            
-            <h3 class="data-subtitle">
-                PRIMARY SYSTEMS:
-            </h3>
-            <div id="border-tech-badges">
-                <span class="tech-badge tooltip">AERIAL SCAN (45%)
-                    <span class="tooltip-text">Drone and aerial surveillance</span>
-                </span>
-                <span class="tech-badge tooltip">VIS NETWORK (38%)
-                    <span class="tooltip-text">Visual monitoring network</span>
-                </span>
-                <span class="tech-badge tooltip">SIGNAL TRAP (22%)
-                    <span class="tooltip-text">Communications and signal monitoring</span>
-                </span>
-            </div>
-            
-            <button class="pixel-button" id="border-detail-btn">VIEW DETAILS</button>
-        </div>
-    </div>
-    
-    <!-- TECH COMPARISON CHART -->
-    <div class="chart-container">
-        <h2 class="chart-title">
-            SYSTEM PREVALENCE ANALYSIS
-        </h2>
-        <canvas id="techChart" height="300"></canvas>
-    </div>
-    
-    <!-- TIMELINE CHART -->
-    <div class="chart-container">
-        <h2 class="chart-title">
-            DEPLOYMENT TIMELINE
-        </h2>
-        <canvas id="timelineChart" height="300"></canvas>
-    </div>
-    
-    <!-- DATA TABLE -->
-    <div class="chart-container">
-        <h2 class="chart-title">
-            RAW DATA STREAM
-        </h2>
-        <div style="overflow-x: auto;">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>METRIC</th>
-                        <th>ATLAS</th>
-                        <th>BORDER</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>AVG MODULES/NODE</td>
-                        <td id="avg-tech-atlas">2.1</td>
-                        <td id="avg-tech-border">3.8</td>
-                    </tr>
-                    <tr>
-                        <td>FEDERAL RESOURCE %</td>
-                        <td id="funding-atlas">12%</td>
-                        <td id="funding-border">68%</td>
-                    </tr>
-                    <tr>
-                        <td>PRIMARY VENDOR</td>
-                        <td id="vendor-atlas">AXON SYSTEMS</td>
-                        <td id="vendor-border">LOCKHEED SEC</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <!-- PAGINATION EXAMPLE -->
-        <div class="pagination">
-            <button class="page-button active">1</button>
-            <button class="page-button">2</button>
-            <button class="page-button">3</button>
-            <button class="page-button">></button>
-        </div>
-    </div>
-    
-    <!-- HELP BUTTON -->
-    <div class="help-button" id="helpBtn">?</div>
-    
-    <!-- HELP MODAL -->
-    <div class="modal" id="helpModal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeModal">×</span>
-            <h2 style="font-family: 'Press Start 2P', cursive; color: var(--primary-pink);">DATA WARS: USER GUIDE</h2>
-            <p>This interface provides analysis of surveillance technologies used by different agencies.</p>
-            <p>Navigation:</p>
-            <ul>
-                <li>Hover over stats and badges for more information</li>
-                <li>Click on chart elements to see detailed data</li>
-                <li>Use the View Details buttons for in-depth analysis</li>
-            </ul>
-            <p>The data is sourced from our relational database of surveillance technologies documented across agencies.</p>
-            <button class="pixel-button" id="closeModalBtn">GOT IT</button>
-        </div>
-    </div>
-</div>
-{% endblock %}
 
-{% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
-<script>
-    // CYBERPUNK DATA VISUALIZATION
-    document.addEventListener('DOMContentLoaded', function() {
-        // ELEMENTS
-        const cards = [document.getElementById('atlas-card'), document.getElementById('border-card')];
-        const helpBtn = document.getElementById('helpBtn');
-        const helpModal = document.getElementById('helpModal');
-        const closeModal = document.getElementById('closeModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const modeToggle = document.getElementById('modeToggle');
-        
-        // MODAL FUNCTIONALITY
-        helpBtn.addEventListener('click', function() {
-            helpModal.style.display = 'block';
-        });
-        
-        closeModal.addEventListener('click', function() {
-            helpModal.style.display = 'none';
-        });
-        
-        closeModalBtn.addEventListener('click', function() {
-            helpModal.style.display = 'none';
-        });
-        
-        window.addEventListener('click', function(event) {
-            if (event.target === helpModal) {
-                helpModal.style.display = 'none';
-            }
-        });
-        
-        // VISUAL MODE TOGGLE
-        let softMode = false;
-        modeToggle.addEventListener('click', function() {
-            softMode = !softMode;
-            document.body.style.transition = 'all 0.5s ease';
+    <div class="content-wrapper">
+        <!-- NAVIGATION BAR -->
+        <nav class="navbar">
+            <div class="container">
+                <a href="/#table">Data Table</a>
+                <a href="/#map">Interactive Map</a>
+                <a href="/data.html" class="active">Data Wars</a>
+            </div>
+        </nav>
+
+        <div class="container">
+            <!-- HEADER -->
+            <header class="data-header">
+                <h1>DATA WARS</h1>
+                <p class="data-subtitle">
+                    POLICE TECHNOLOGY TRACKING SYSTEM
+                </p>
+            </header>
             
-            if (softMode) {
-                document.documentElement.style.setProperty('--primary-pink', '#ff8cc3');
-                document.documentElement.style.setProperty('--secondary-pink', '#ffadd6');
-                document.documentElement.style.setProperty('--dark-bg', '#2a0a33');
-                document.querySelector('.container::before').style.opacity = '0.3';
-                modeToggle.textContent = 'RETRO MODE';
-            } else {
-                document.documentElement.style.setProperty('--primary-pink', '#ff6bb4');
-                document.documentElement.style.setProperty('--secondary-pink', '#ff8cc3');
-                document.documentElement.style.setProperty('--dark-bg', '#1a0022');
-                document.querySelector('.container::before').style.opacity = '0.7';
-                modeToggle.textContent = 'SOFTEN VISUALS';
+            <!-- ABOUT SECTION -->
+            <section class="about-section">
+                <h2>ABOUT THIS PROJECT</h2>
+                <p>Welcome to Data Wars, an interactive atlas tracking police surveillance technologies across the United States. This platform visualizes the rapid expansion of surveillance infrastructure and its impact on civil liberties.</p>
+                
+                <p>Our database includes:</p>
+                <ul>
+                    <li>Detailed records of surveillance technologies deployed by law enforcement agencies</li>
+                    <li>Vendor information and procurement documents</li>
+                    <li>Geographic distribution of surveillance networks</li>
+                    <li>Temporal analysis of technology adoption</li>
+                </ul>
+                
+                <p>The data reveals patterns in the militarization of police forces and the normalization of surveillance in everyday life.</p>
+                
+                <div class="data-preview">
+                    <h3>SAMPLE DATA</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>AOSNUMBER</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Agency</th>
+                                <th>Technology</th>
+                                <th>Vendor</th>
+                                <th>Year</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AOS000001</td>
+                                <td>Woodstock</td>
+                                <td>VA</td>
+                                <td>Woodstock Police</td>
+                                <td>Body-worn Cameras</td>
+                                <td>VML Insurance</td>
+                                <td>2012</td>
+                            </tr>
+                            <tr>
+                                <td>AOS000002</td>
+                                <td>Rockford</td>
+                                <td>IL</td>
+                                <td>Rockford Police</td>
+                                <td>Gunshot Detection</td>
+                                <td>ShotSpotter</td>
+                                <td>2018</td>
+                            </tr>
+                            <tr>
+                                <td>AZCOC010</td>
+                                <td>Bisbee</td>
+                                <td>AZ</td>
+                                <td>Cochise County Sheriff</td>
+                                <td>Body-worn Cameras</td>
+                                <td>Axon</td>
+                                <td>2019</td>
+                            </tr>
+                            <tr>
+                                <td>AZCOC014</td>
+                                <td>Bisbee</td>
+                                <td>AZ</td>
+                                <td>Cochise County Sheriff</td>
+                                <td>Camera Network</td>
+                                <td>Cogniac</td>
+                                <td>2016</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- INTERACTIVE PANEL -->
+            <section class="interactive-panel">
+                <h3>EXPLORE THE DATA</h3>
+                <p>Use these interactive controls to filter and analyze the surveillance technology landscape:</p>
+                
+                <div class="interactive-controls">
+                    <button class="interactive-button" id="filterBodyCams">Body Cameras</button>
+                    <button class="interactive-button" id="filterDrones">Drones</button>
+                    <button class="interactive-button" id="filterALPR">License Plate Readers</button>
+                    <button class="interactive-button" id="filterShotSpotter">Gunshot Detection</button>
+                    <button class="interactive-button" id="filterStingray">Cell Trackers</button>
+                    <button class="interactive-button" id="filterAll">Show All</button>
+                </div>
+                
+                <p>Select a technology type to see its distribution across agencies and geographic regions.</p>
+            </section>
+            
+            <!-- LOADING BAR -->
+            <div class="loading-bar"></div>
+            
+            <!-- COMPARISON GRID -->
+            <div class="comparison-grid">
+                <!-- ATLAS CARD -->
+                <div class="dataset-card" id="atlas-card">
+                    <h2>ATLAS NETWORK</h2>
+                    <p class="data-subtitle">
+                        SURVEILLANCE GRID STATUS
+                    </p>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-item tooltip">
+                            <span class="stat-value" id="atlas-agencies">5,200+</span>
+                            <span class="stat-label">NODES ONLINE</span>
+                            <span class="tooltip-text">Active surveillance nodes in the ATLAS network</span>
+                        </div>
+                        <div class="stat-item tooltip">
+                            <span class="stat-value" id="atlas-states">48</span>
+                            <span class="stat-label">SECTORS</span>
+                            <span class="tooltip-text">Geographic sectors covered by the network</span>
+                        </div>
+                        <div class="stat-item tooltip">
+                            <span class="stat-value" id="atlas-tech">22</span>
+                            <span class="stat-label">MODULE TYPES</span>
+                            <span class="tooltip-text">Different surveillance technologies deployed</span>
+                        </div>
+                        <div class="stat-item tooltip">
+                            <span class="stat-value" id="atlas-year">2010</span>
+                            <span class="stat-label">INITIAL DEPLOY</span>
+                            <span class="tooltip-text">Year when the network was first activated</span>
+                        </div>
+                    </div>
+                    
+                    <h3 class="data-subtitle">
+                        PRIMARY SYSTEMS:
+                    </h3>
+                    <div id="atlas-tech-badges">
+                        <span class="tech-badge tooltip">VISUAL CAPTURE (65%)
+                            <span class="tooltip-text">Camera-based surveillance systems</span>
+                        </span>
+                        <span class="tech-badge tooltip">AUTO SCAN (45%)
+                            <span class="tooltip-text">Automated recognition and scanning</span>
+                        </span>
+                        <span class="tech-badge tooltip">AUDIO TRACK (28%)
+                            <span class="tooltip-text">Sound monitoring and analysis</span>
+                        </span>
+                    </div>
+                    
+                    <button class="pixel-button" id="atlas-detail-btn">VIEW DETAILS</button>
+                </div>
+                
+                <!-- BORDER CARD -->
+                <div class="dataset-card" id="border-card">
+                    <h2>BORDER PROTOCOL</h2>
+                    <p class="data-subtitle">
+                        SECURITY GRID STATUS
+                    </p>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-item tooltip">
+                            <span class="stat-value" id="border-agencies">87</span>
+                            <span class="stat-label">NODES ONLINE</span>
+                            <span class="tooltip-text">Active surveillance nodes at border locations</span>
+                        </div>
+                        <div class="stat-item tooltip">
+                            <span class="stat-value" id="border-states">4</span>
+                            <span class="stat-label">SECTORS</span>
+                            <span class="tooltip-text">Border regions covered by the network</span>
+                        </div>
+                        <div class="stat-item tooltip">
+                            <span class="stat-value" id="border-tech">14</span>
+                            <span class="stat-label">MODULE TYPES</span>
+                            <span class="tooltip-text">Different surveillance technologies deployed</span>
+                        </div>
+                        <div class="stat-item tooltip">
+                            <span class="stat-value" id="border-year">2014</span>
+                            <span class="stat-label">INITIAL DEPLOY</span>
+                            <span class="tooltip-text">Year when the border protocol was activated</span>
+                        </div>
+                    </div>
+                    
+                    <h3 class="data-subtitle">
+                        PRIMARY SYSTEMS:
+                    </h3>
+                    <div id="border-tech-badges">
+                        <span class="tech-badge tooltip">AERIAL SCAN (45%)
+                            <span class="tooltip-text">Drone and aerial surveillance</span>
+                        </span>
+                        <span class="tech-badge tooltip">VIS NETWORK (38%)
+                            <span class="tooltip-text">Visual monitoring network</span>
+                        </span>
+                        <span class="tech-badge tooltip">SIGNAL TRAP (22%)
+                            <span class="tooltip-text">Communications and signal monitoring</span>
+                        </span>
+                    </div>
+                    
+                    <button class="pixel-button" id="border-detail-btn">VIEW DETAILS</button>
+                </div>
+            </div>
+
+            <!-- TECH COMPARISON CHART WITH CONTROLS -->
+            <div class="sampling-controls">
+                <label>DATA SAMPLING:</label>
+                <select id="sampleMethod">
+                    <option value="random">Random Sampling</option>
+                    <option value="average">Average Buckets</option>
+                    <option value="first">First N Items</option>
+                    <option value="last">Last N Items</option>
+                </select>
+                <input type="number" id="sampleSize" value="1000" min="100" max="10000">
+                <button class="pixel-button" id="applySampling">Apply</button>
+            </div>
+            
+            <div class="chart-container">
+                <div class="data-loading" id="techChartLoading" style="display: none;">
+                    <div class="loading-spinner"></div>
+                </div>
+                <h2 class="chart-title">SYSTEM PREVALENCE ANALYSIS</h2>
+                <canvas id="techChart"></canvas>
+            </div>
+            
+            <!-- TIMELINE CHART WITH CONTROLS -->
+            <div class="sampling-controls">
+                <label>TIME RESOLUTION:</label>
+                <select id="timeResolution">
+                    <option value="yearly">Yearly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="daily" selected>Daily</option>
+                </select>
+                <button class="pixel-button" id="applyResolution">Apply</button>
+            </div>
+            
+            <div class="chart-container">
+                <div class="data-loading" id="timelineChartLoading" style="display: none;">
+                    <div class="loading-spinner"></div>
+                </div>
+                <h2 class="chart-title">DEPLOYMENT TIMELINE</h2>
+                <canvas id="timelineChart"></canvas>
+            </div>
+            
+            <!-- DATA TABLE -->
+            <div class="chart-container">
+                <h2 class="chart-title">RAW DATA STREAM</h2>
+                <div class="data-table-container">
+                    <div class="data-loading" id="tableLoading" style="display: none;">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <table class="data-table" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th width="30%">ID</th>
+                                <th width="20%">DATE</th>
+                                <th width="25%">TYPE</th>
+                                <th width="25%">VALUE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Data will be loaded here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="pagination-controls">
+                    <div>
+                        <span>Rows per page: </span>
+                        <select class="page-size-selector" id="pageSize">
+                            <option value="50">50</option>
+                            <option value="100" selected>100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                        </select>
+                    </div>
+                    <div class="pagination">
+                        <button class="page-button" id="firstPage">«</button>
+                        <button class="page-button" id="prevPage">‹</button>
+                        <span id="pageInfo">Page 1 of 1</span>
+                        <button class="page-button" id="nextPage">›</button>
+                        <button class="page-button" id="lastPage">»</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- HELP BUTTON -->
+            <div class="help-button" id="helpBtn">?</div>
+            
+            <!-- HELP MODAL -->
+            <div class="modal" id="helpModal">
+                <div class="modal-content">
+                    <span class="close-modal" id="closeModal">×</span>
+                    <h2 style="font-family: 'Press Start 2P', cursive; color: var(--primary-pink);">DATA WARS: USER GUIDE</h2>
+                    <p>This interface provides analysis of surveillance technologies used by different agencies.</p>
+                    <p>Navigation:</p>
+                    <ul>
+                        <li>Use sampling controls to manage large datasets</li>
+                        <li>Paginate through table data</li>
+                        <li>Adjust time resolution for timeline charts</li>
+                        <li>Hover over elements for additional information</li>
+                        <li>Click technology buttons to filter data</li>
+                        <li>Toggle between retro and soft visual modes</li>
+                    </ul>
+                    <button class="pixel-button" id="closeModalBtn">GOT IT</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script>
+                // ===== FLOWER CURSOR TRAIL =====
+                const flowers = [];
+        const flowerCount = 12;
+        const flowerColors = ['#ff69b4', '#ffb6c1', '#db7093', '#ff85a2', '#ff9ebb'];
+        const flowerSizes = [18, 20, 22, 24, 26];
+    
+        // Create flower elements
+        for (let i = 0; i < flowerCount; i++) {
+            const flower = document.createElement('div');
+            flower.className = 'flower-trail';
+            const size = flowerSizes[Math.floor(Math.random() * flowerSizes.length)];
+            const color = flowerColors[Math.floor(Math.random() * flowerColors.length)];
+    
+            flower.innerHTML = `
+                <svg width="${size}" height="${size}" style="color: ${color}">
+                    <use href="#flower"></use>
+                </svg>
+            `;
+    
+            flower.style.opacity = 0;
+            flower.style.transition = `opacity ${0.2 + i*0.05}s, transform ${0.2 + i*0.03}s`;
+            document.body.appendChild(flower);
+            flowers.push({
+                element: flower,
+                size: size,
+                delay: i * 50
+            });
+        }
+    
+        let mouseX = 0;
+        let mouseY = 0;
+        let lastPositions = [];
+        const positionHistoryLength = 5;
+    
+        // Track mouse movement
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+    
+            // Store recent positions for smoother trail
+            lastPositions.unshift({x: mouseX, y: mouseY});
+            if (lastPositions.length > positionHistoryLength) {
+                lastPositions.pop();
             }
+    
+            updateFlowerTrail();
         });
-        
-        // GLITCH EFFECT ON LOAD
-        setTimeout(() => {
-            cards.forEach((card, i) => {
-                setTimeout(() => {
-                    card.classList.add('battle-highlight');
+    
+        function updateFlowerTrail() {
+            flowers.forEach((flower, index) => {
+                const posIndex = Math.min(index, lastPositions.length - 1);
+                if (posIndex >= 0) {
+                    const {x, y} = lastPositions[posIndex];
+    
+                    // Calculate delay-based movement
                     setTimeout(() => {
-                        card.classList.remove('battle-highlight');
-                    }, 1500);
-                }, i * 300);
+                        flower.element.style.left = `${x}px`;
+                        flower.element.style.top = `${y}px`;
+                        flower.element.style.opacity = 0.8 - (index * 0.06);
+                        flower.element.style.transform = `
+                            translate(-50%, -50%)
+                            rotate(${index * 15}deg)
+                            scale(${0.7 + (index * 0.03)})
+                        `;
+                    }, flower.delay);
+                }
             });
-        }, 1000);
-
-        // DETAIL BUTTONS
-        document.getElementById('atlas-detail-btn').addEventListener('click', function() {
-            // Simulate loading
-            this.textContent = 'LOADING...';
-            setTimeout(() => {
-                this.textContent = 'VIEW DETAILS';
-                alert('ATLAS network details would display here');
-            }, 800);
-        });
-        
-        document.getElementById('border-detail-btn').addEventListener('click', function() {
-            // Simulate loading
-            this.textContent = 'LOADING...';
-            setTimeout(() => {
-                this.textContent = 'VIEW DETAILS';
-                alert('BORDER protocol details would display here');
-            }, 800);
-        });
-
-        // PAGINATION BUTTONS
-        const pageButtons = document.querySelectorAll('.page-button');
-        pageButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                pageButtons.forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                // Here you would fetch new data from your relational database
+        }
+    
+        // Hide flowers when mouse stops
+        let mouseStopTimer;
+        document.addEventListener('mousemove', () => {
+            clearTimeout(mouseStopTimer);
+            flowers.forEach(flower => {
+                flower.element.style.opacity = 0.8;
             });
+            mouseStopTimer = setTimeout(() => {
+                flowers.forEach(flower => {
+                    flower.element.style.opacity = 0;
+                });
+            }, 300);
         });
 
-        // CREATE CHART WITH NEW COLOR SCHEME
+        // Chart color scheme
         const chartColors = {
             pink: 'rgba(255, 107, 180, 0.8)',
             lightPink: 'rgba(255, 140, 195, 0.8)',
@@ -937,16 +1482,142 @@
             purple: 'rgba(153, 102, 255, 0.8)'
         };
 
-        // TECH CHART
-        const techCtx = document.getElementById('techChart').getContext('2d');
-        const techChart = new Chart(techCtx, {
-            type: 'bar',
-            data: {
-                labels: ['VIS CAP', 'DRONE', 'AUTO SCAN', 'AUD TRK', 'SIG TRP'],
-                datasets: [
+        document.addEventListener('DOMContentLoaded', function() {
+            // Custom cursor logic
+            const cursor = document.querySelector('.custom-cursor');
+            const cursorFollower = document.querySelector('.cursor-follower');
+            
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                
+                // Delayed follower effect
+                setTimeout(() => {
+                    cursorFollower.style.left = e.clientX + 'px';
+                    cursorFollower.style.top = e.clientY + 'px';
+                }, 100);
+            });
+            
+            // Make cursor interactive with clickable elements
+            const interactiveElements = document.querySelectorAll('a, button, .tech-badge, .page-button, .interactive-button');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                    cursorFollower.style.transform = 'translate(-50%, -50%) scale(2)';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursorFollower.style.transform = 'translate(-50%, -50%) scale(1)';
+                });
+            });
+
+            // Initialize variables
+            let fullDataset = null;
+            let currentPage = 1;
+            let pageSize = 100;
+            let totalPages = 1;
+            let chartDataLimit = 1000;
+            
+            // Initialize empty charts
+            const techCtx = document.getElementById('techChart').getContext('2d');
+            const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+            
+            window.techChart = new Chart(techCtx, {
+                type: 'bar',
+                data: { labels: [], datasets: [] },
+                options: getChartOptions('MODULE DEPLOYMENT (%)')
+            });
+            
+            window.timelineChart = new Chart(timelineCtx, {
+                type: 'line',
+                data: { labels: [], datasets: [] },
+                options: getChartOptions('NODES ONLINE')
+            });
+
+            // Load initial data
+            loadInitialData();
+            
+            // Event listeners
+            document.getElementById('applySampling').addEventListener('click', applySampling);
+            document.getElementById('applyResolution').addEventListener('click', applyTimeResolution);
+            document.getElementById('pageSize').addEventListener('change', updatePageSize);
+            document.getElementById('firstPage').addEventListener('click', () => goToPage(1));
+            document.getElementById('prevPage').addEventListener('click', () => goToPage(currentPage - 1));
+            document.getElementById('nextPage').addEventListener('click', () => goToPage(currentPage + 1));
+            document.getElementById('lastPage').addEventListener('click', () => goToPage(totalPages));
+            document.getElementById('atlas-detail-btn').addEventListener('click', function() {
+                this.textContent = 'LOADING...';
+                setTimeout(() => {
+                    this.textContent = 'VIEW DETAILS';
+                    showDetailModal('ATLAS NETWORK', 'The ATLAS Network is a nationwide surveillance system connecting local, state, and federal law enforcement agencies through shared technology infrastructure. It includes over 5,200 nodes across 48 states, with primary deployments in urban areas.');
+                }, 800);
+            });
+            document.getElementById('border-detail-btn').addEventListener('click', function() {
+                this.textContent = 'LOADING...';
+                setTimeout(() => {
+                    this.textContent = 'VIEW DETAILS';
+                    showDetailModal('BORDER PROTOCOL', 'The Border Protocol focuses on surveillance technologies deployed along U.S. borders, particularly the southern border with Mexico. It includes aerial surveillance, ground sensors, and biometric tracking systems.');
+                }, 800);
+            });
+            document.getElementById('helpBtn').addEventListener('click', showHelpModal);
+            document.getElementById('closeModal').addEventListener('click', hideHelpModal);
+            document.getElementById('closeModalBtn').addEventListener('click', hideHelpModal);
+            document.getElementById('modeToggle').addEventListener('click', toggleVisualMode);
+            
+            // Interactive filter buttons
+            document.getElementById('filterBodyCams').addEventListener('click', () => filterData('Body-worn Cameras'));
+            document.getElementById('filterDrones').addEventListener('click', () => filterData('Drones'));
+            document.getElementById('filterALPR').addEventListener('click', () => filterData('License Plate Readers'));
+            document.getElementById('filterShotSpotter').addEventListener('click', () => filterData('Gunshot Detection'));
+            document.getElementById('filterStingray').addEventListener('click', () => filterData('Cell Trackers'));
+            document.getElementById('filterAll').addEventListener('click', () => filterData('All'));
+
+            // Data loading functions
+            function loadInitialData() {
+                showLoading('techChartLoading');
+                showLoading('timelineChartLoading');
+                showLoading('tableLoading');
+                
+                // Simulate API call
+                setTimeout(() => {
+                    const mockData = generateMockData(50000); // 50,000 rows
+                    fullDataset = mockData;
+                    processData(mockData);
+                }, 1000);
+            }
+            
+            function processData(data) {
+                const sampledData = sampleData(data, chartDataLimit);
+                updateTechChart(sampledData);
+                updateTimelineChart(sampledData);
+                paginateTableData(data, currentPage, pageSize);
+                hideAllLoading();
+            }
+            
+            function sampleData(data, limit) {
+                if (data.length <= limit) return data;
+                
+                const step = Math.floor(data.length / limit);
+                const result = [];
+                
+                for (let i = 0; i < data.length; i += step) {
+                    result.push(data[i]);
+                    if (result.length >= limit) break;
+                }
+                
+                return result;
+            }
+            
+            function updateTechChart(data) {
+                const labels = data.map(item => item.date.substring(0, 10));
+                const atlasData = data.map(item => item.value1);
+                const borderData = data.map(item => item.value2);
+                
+                techChart.data.labels = labels;
+                techChart.data.datasets = [
                     {
                         label: 'ATLAS',
-                        data: [65, 12, 45, 28, 15],
+                        data: atlasData,
                         backgroundColor: chartColors.pink,
                         borderColor: '#fff',
                         borderWidth: 1,
@@ -954,243 +1625,328 @@
                     },
                     {
                         label: 'BORDER',
-                        data: [30, 45, 25, 15, 22],
+                        data: borderData,
                         backgroundColor: chartColors.neonBlue,
                         borderColor: '#fff',
                         borderWidth: 1,
                         borderRadius: 3
                     }
-                ]
-            },
-            options: getChartOptions('MODULE DEPLOYMENT (%)')
-        });
-
-        // TIMELINE CHART
-        const timelineCtx = document.getElementById('timelineChart').getContext('2d');
-        const timelineChart = new Chart(timelineCtx, {
-            type: 'line',
-            data: {
-                labels: ['2010', '2012', '2014', '2016', '2018', '2020', '2022'],
-                datasets: [
+                ];
+                techChart.update();
+            }
+            
+            function updateTimelineChart(data) {
+                const labels = data.map(item => item.date.substring(0, 10));
+                const atlasData = data.map(item => item.value1);
+                const borderData = data.map(item => item.value2);
+                
+                timelineChart.data.labels = labels;
+                timelineChart.data.datasets = [
                     {
                         label: 'ATLAS',
-                        data: [120, 350, 800, 1500, 2800, 4200, 5200],
+                        data: atlasData,
                         borderColor: chartColors.pink,
                         backgroundColor: 'rgba(255, 107, 180, 0.1)',
                         borderWidth: 3,
                         tension: 0.3,
-                        fill: true,
-                        pointBackgroundColor: chartColors.pink,
-                        pointRadius: 6,
-                        pointHoverRadius: 8
+                        fill: true
                     },
                     {
                         label: 'BORDER',
-                        data: [0, 5, 15, 40, 60, 80, 87],
+                        data: borderData,
                         borderColor: chartColors.neonBlue,
                         backgroundColor: 'rgba(0, 217, 255, 0.1)',
                         borderWidth: 3,
                         tension: 0.3,
-                        fill: true,
-                        pointBackgroundColor: chartColors.neonBlue,
-                        pointRadius: 6,
-                        pointHoverRadius: 8
+                        fill: true
                     }
-                ]
-            },
-            options: getChartOptions('NODES ONLINE')
-        });
-
-        // CHART CONFIG WITH IMPROVED UX
-        function getChartOptions(title) {
-            return {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        labels: {
+                ];
+                timelineChart.update();
+            }
+            
+            function paginateTableData(data, page, size) {
+                const start = (page - 1) * size;
+                const end = start + size;
+                const pageData = data.slice(start, end);
+                
+                updateTable(pageData);
+                updatePagination(Math.ceil(data.length / size));
+            }
+            
+            function updateTable(data) {
+                const tableBody = document.getElementById('tableBody');
+                tableBody.innerHTML = '';
+                
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.id}</td>
+                        <td>${item.date.substring(0, 10)}</td>
+                        <td>${item.type}</td>
+                        <td>${item.value1.toFixed(2)}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+            
+            function updatePagination(total) {
+                totalPages = total;
+                currentPage = Math.min(currentPage, totalPages);
+                document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+                
+                // Enable/disable pagination buttons
+                document.getElementById('firstPage').disabled = currentPage === 1;
+                document.getElementById('prevPage').disabled = currentPage === 1;
+                document.getElementById('nextPage').disabled = currentPage === totalPages;
+                document.getElementById('lastPage').disabled = currentPage === totalPages;
+            }
+            
+            // Control functions
+            function applySampling() {
+                showLoading('techChartLoading');
+                
+                const method = document.getElementById('sampleMethod').value;
+                const size = parseInt(document.getElementById('sampleSize').value);
+                
+                // In a real app, you would implement different sampling methods
+                const sampledData = sampleData(fullDataset, size);
+                updateTechChart(sampledData);
+                
+                hideLoading('techChartLoading');
+            }
+            
+            function applyTimeResolution() {
+                showLoading('timelineChartLoading');
+                
+                const resolution = document.getElementById('timeResolution').value;
+                
+                // In a real app, you would aggregate data by the selected resolution
+                const sampledData = sampleData(fullDataset, chartDataLimit);
+                updateTimelineChart(sampledData);
+                
+                hideLoading('timelineChartLoading');
+            }
+            
+            function updatePageSize() {
+                pageSize = parseInt(document.getElementById('pageSize').value);
+                currentPage = 1;
+                paginateTableData(fullDataset, currentPage, pageSize);
+            }
+            
+            function goToPage(page) {
+                if (page < 1 || page > totalPages) return;
+                currentPage = page;
+                paginateTableData(fullDataset, currentPage, pageSize);
+            }
+            
+            // Filter function for interactive buttons
+            function filterData(type) {
+                showLoading('techChartLoading');
+                showLoading('timelineChartLoading');
+                showLoading('tableLoading');
+                
+                // In a real app, you would filter the actual dataset
+                // For demo, we'll just simulate filtering
+                setTimeout(() => {
+                    let filteredData = fullDataset;
+                    
+                    if (type !== 'All') {
+                        // Simulate filtering by type
+                        filteredData = fullDataset.filter(item => 
+                            item.type.toLowerCase().includes(type.toLowerCase())
+                        );
+                    }
+                    
+                    processData(filteredData);
+                    
+                    // Add visual feedback
+                    const buttons = document.querySelectorAll('.interactive-button');
+                    buttons.forEach(btn => {
+                        if (btn.textContent.includes(type) || (type === 'All' && btn.id === 'filterAll')) {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+                    
+                    // Add pixel animation effect
+                    const charts = document.querySelectorAll('.chart-container');
+                    charts.forEach(chart => {
+                        chart.classList.add('pixel-animation');
+                        setTimeout(() => {
+                            chart.classList.remove('pixel-animation');
+                        }, 500);
+                    });
+                }, 500);
+            }
+            
+            // Theme toggle function
+            function toggleVisualMode() {
+                const body = document.body;
+                const isSoft = body.classList.toggle('soft-mode');
+                
+                document.getElementById('modeToggle').textContent = 
+                    isSoft ? 'RETRO MODE' : 'SOFTEN VISUALS';
+                
+                // Add transition effect
+                body.style.animation = 'none';
+                void body.offsetWidth; // Trigger reflow
+                body.style.animation = 'pixelate 0.5s';
+            }
+            
+            // Modal functions
+            function showDetailModal(title, content) {
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.id = 'detailModal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <span class="close-modal" id="closeDetailModal">×</span>
+                        <h2 style="font-family: 'Press Start 2P', cursive; color: var(--primary-pink);">${title}</h2>
+                        <p>${content}</p>
+                        <div class="stats-grid" style="margin: 2rem 0;">
+                            <div class="stat-item">
+                                <span class="stat-value">${Math.floor(Math.random() * 100)}%</span>
+                                <span class="stat-label">COVERAGE</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">$${Math.floor(Math.random() * 50 + 10)}M</span>
+                                <span class="stat-label">FUNDING</span>
+                            </div>
+                        </div>
+                        <button class="pixel-button" id="closeDetailModalBtn">CLOSE</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                modal.style.display = 'block';
+                
+                document.getElementById('closeDetailModal').addEventListener('click', () => {
+                    modal.remove();
+                });
+                document.getElementById('closeDetailModalBtn').addEventListener('click', () => {
+                    modal.remove();
+                });
+            }
+            
+            function showHelpModal() {
+                document.getElementById('helpModal').style.display = 'block';
+            }
+            
+            function hideHelpModal() {
+                document.getElementById('helpModal').style.display = 'none';
+            }
+            
+            // Helper functions
+            function showLoading(elementId) {
+                document.getElementById(elementId).style.display = 'flex';
+            }
+            
+            function hideLoading(elementId) {
+                document.getElementById(elementId).style.display = 'none';
+            }
+            
+            function hideAllLoading() {
+                hideLoading('techChartLoading');
+                hideLoading('timelineChartLoading');
+                hideLoading('tableLoading');
+            }
+            
+            // Mock data generator for demonstration
+            function generateMockData(count) {
+                const types = ['Body-worn Cameras', 'Drones', 'License Plate Readers', 'Gunshot Detection', 'Cell Trackers', 'Facial Recognition', 'Biometric Scanners'];
+                const data = [];
+                
+                let date = new Date(2010, 0, 1);
+                
+                for (let i = 0; i < count; i++) {
+                    date = new Date(date.getTime() + 1000 * 60 * 60 * 24 * Math.random() * 10);
+                    
+                    data.push({
+                        id: `ID-${100000 + i}`,
+                        date: date.toISOString(),
+                        type: types[Math.floor(Math.random() * types.length)],
+                        value1: Math.random() * 100,
+                        value2: Math.random() * 100
+                    });
+                }
+                
+                return data;
+            }
+            
+            // Chart configuration
+            function getChartOptions(title) {
+                return {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: {
+                                    family: "'Press Start 2P', cursive",
+                                    size: 10
+                                },
+                                color: chartColors.neonBlue,
+                                padding: 15
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: title,
                             font: {
                                 family: "'Press Start 2P', cursive",
-                                size: 10
+                                size: 12
                             },
-                            color: chartColors.neonBlue,
-                            padding: 15
-                        },
-                        onClick: function(e, legendItem, legend) {
-                            const index = legendItem.datasetIndex;
-                            const ci = legend.chart;
-                            const meta = ci.getDatasetMeta(index);
-                            
-                            // Toggle visibility
-                            meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
-                            
-                            // Flash effect on change
-                            if (index === 0) {
-                                document.getElementById('atlas-card').classList.add('battle-highlight');
-                                setTimeout(() => {
-                                    document.getElementById('atlas-card').classList.remove('battle-highlight');
-                                }, 1500);
-                            } else {
-                                document.getElementById('border-card').classList.add('battle-highlight');
-                                setTimeout(() => {
-                                    document.getElementById('border-card').classList.remove('battle-highlight');
-                                }, 1500);
+                            color: chartColors.pink,
+                            padding: {
+                                top: 10,
+                                bottom: 20
                             }
-                            
-                            ci.update();
+                        },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false
                         }
                     },
-                    title: {
-                        display: true,
-                        text: title,
-                        font: {
-                            family: "'Press Start 2P', cursive",
-                            size: 12
-                        },
-                        color: chartColors.pink,
-                        padding: {
-                            top: 10,
-                            bottom: 20
-                        }
-                    },
-                    tooltip: {
-                        enabled: true,
-                        titleFont: {
-                            family: "'DotGothic16', sans-serif",
-                            size: 12
-                        },
-                        bodyFont: {
-                            family: "'DotGothic16', sans-serif",
-                            size: 12
-                        },
-                        backgroundColor: 'rgba(26, 0, 34, 0.9)',
-                        titleColor: chartColors.pink,
-                        bodyColor: chartColors.lightPink,
-                        borderColor: chartColors.pink,
-                        borderWidth: 1,
-                        padding: 12,
-                        displayColors: true,
-                        cornerRadius: 4,
-                        caretSize: 10,
-                        // Make tooltip more interactive
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                label += context.parsed.y;
-                                return label;
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 107, 180, 0.1)',
+                                lineWidth: 1
                             },
-                            afterLabel: function(context) {
-                                // Add extra information for the tooltip
-                                const datasetLabel = context.dataset.label;
-                                if (datasetLabel === 'ATLAS') {
-                                    return 'ATLAS network module prevalence';
-                                } else {
-                                    return 'BORDER protocol module prevalence';
-                                }
+                            ticks: {
+                                color: chartColors.lightPink,
+                                font: {
+                                    family: "'DotGothic16', sans-serif",
+                                    size: 10
+                                },
+                                padding: 10
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 107, 180, 0.1)',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: chartColors.lightPink,
+                                font: {
+                                    family: "'DotGothic16', sans-serif",
+                                    size: 10
+                                },
+                                maxRotation: 45,
+                                minRotation: 45
                             }
                         }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(255, 107, 180, 0.1)',
-                            lineWidth: 1
-                        },
-                        ticks: {
-                            color: chartColors.lightPink,
-                            font: {
-                                family: "'DotGothic16', sans-serif",
-                                size: 10
-                            },
-                            padding: 10
-                        },
-                        border: {
-                            color: 'rgba(255, 107, 180, 0.3)'
-                        }
                     },
-                    x: {
-                        grid: {
-                            color: 'rgba(255, 107, 180, 0.1)',
-                            lineWidth: 1
-                        },
-                        ticks: {
-                            color: chartColors.lightPink,
-                            font: {
-                                family: "'DotGothic16', sans-serif",
-                                size: 10
-                            },
-                            padding: 10
-                        },
-                        border: {
-                            color: 'rgba(255, 107, 180, 0.3)'
-                        }
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutQuart'
                     }
-                },
-                interaction: {
-                    mode: 'index',
-                    intersect: false
-                },
-                animation: {
-                    duration: 1000,
-                    easing: 'easeOutQuart'
-                },
-                hover: {
-                    mode: 'nearest',
-                    intersect: true,
-                    animationDuration: 400
-                },
-                onClick: function(e, elements) {
-                    if (elements.length > 0) {
-                        const element = elements[0];
-                        const dataset = this.data.datasets[element.datasetIndex];
-                        const datapoint = dataset.data[element.index];
-                        
-                        alert(`Selected: ${dataset.label} - ${this.data.labels[element.index]}: ${datapoint}`);
-                    }
-                }
-            };
-        }
-
-        // DYNAMIC DATA UPDATES (SIMULATING DATABASE CONNECTION)
-        function updateData() {
-            // Simulate fetching new data from database
-            const atlasAgencies = Math.floor(5200 + (Math.random() * 100 - 50));
-            const borderAgencies = Math.floor(87 + (Math.random() * 6 - 3));
-            
-            // Update DOM with new values
-            document.getElementById('atlas-agencies').textContent = atlasAgencies.toLocaleString();
-            document.getElementById('border-agencies').textContent = borderAgencies;
-            
-            // Animate changes
-            document.getElementById('atlas-agencies').parentElement.classList.add('battle-highlight');
-            document.getElementById('border-agencies').parentElement.classList.add('battle-highlight');
-            
-            setTimeout(() => {
-                document.getElementById('atlas-agencies').parentElement.classList.remove('battle-highlight');
-                document.getElementById('border-agencies').parentElement.classList.remove('battle-highlight');
-            }, 1000);
-            
-            // Update chart data
-            timelineChart.data.datasets[0].data[6] = atlasAgencies;
-            timelineChart.data.datasets[1].data[6] = borderAgencies;
-            timelineChart.update();
-        }
-        
-        // Simulate real-time updates from database
-        setInterval(updateData, 5000);
-        
-        // Add hover effects to table rows
-        const tableRows = document.querySelectorAll('.data-table tr');
-        tableRows.forEach(row => {
-            row.addEventListener('mouseenter', function() {
-                this.style.transition = 'all 0.3s';
-            });
+                };
+            }
         });
-    });
-</script>
-{% endblock %}
+    </script>
+</body>
+</html>
