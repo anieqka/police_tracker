@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,11 +26,11 @@
         /* Soft mode colors */
         .soft-mode {
             --primary-pink: #ff9ac8;
-            --secondary-pink: #ffb3d6;
-            --light-pink: #ffe6f2;
+            --secondary-pink: #e189b2;
+            --light-pink: #e5b5cb;
             --dark-pink: #e673a5;
-            --text-pink: #33001a;
-            --dark-bg: #ffe6f5;
+            --text-pink: #ab3170;
+            --dark-bg: #a85479;
             --neon-blue: #66ccff;
             --accent-purple: #cc99ff;
         }
@@ -307,7 +311,7 @@
         }
 
         .soft-mode .dataset-card {
-            background: rgba(255, 230, 245, 0.8);
+            background: rgba(188, 105, 140, 0.8);
             box-shadow: 
                 0 0 10px var(--primary-pink),
                 inset 0 0 5px var(--secondary-pink);
@@ -349,7 +353,7 @@
         }
 
         .soft-mode .stat-item {
-            background: rgba(255, 230, 245, 0.7);
+            background: rgba(188, 105, 140, 0.8);
             box-shadow: 
                 inset 0 0 5px rgba(0, 217, 255, 0.1),
                 0 0 3px rgba(0, 217, 255, 0.2);
@@ -451,7 +455,7 @@
         }
 
         .soft-mode .chart-container {
-            background: rgba(255, 230, 245, 0.8);
+            background: rgba(188, 105, 140, 0.8);
             box-shadow: 
                 0 0 10px var(--primary-pink),
                 inset 0 0 5px var(--secondary-pink);
@@ -587,7 +591,7 @@
         }
 
         .soft-mode .sampling-controls {
-            background: rgba(255, 230, 245, 0.9);
+            background: rgba(188, 105, 140, 0.8);
         }
         
         .sampling-controls label {
@@ -614,7 +618,7 @@
         }
 
         .pixel-button {
-            background: var(--dark-bg);
+            background: rgba(255, 107, 180, 0.3);
             color: var(--primary-pink);
             border: 2px solid var(--primary-pink);
             font-family: 'Press Start 2P', cursive;
@@ -1049,8 +1053,19 @@
                 padding: 3px 8px;
             }
         }
+
+
     </style>
 </head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZYETR504K5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-ZYETR504K5');
+</script>
 <body>
 
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -1166,7 +1181,7 @@
             <!-- INTERACTIVE PANEL -->
             <section class="interactive-panel">
                 <h3>EXPLORE THE DATA</h3>
-                <p>Use these interactive controls to filter and analyze the surveillance technology landscape:</p>
+                <p>Use these interactive controls to filter and analyse the surveillance technology landscape:</p>
                 
                 <div class="interactive-controls">
                     <button class="interactive-button" id="filterBodyCams">Body Cameras</button>
@@ -1387,6 +1402,7 @@
                 </div>
             </div>
         </div>
+        {% include "footer.html" %}
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
@@ -1459,7 +1475,8 @@
                 }
             });
         }
-    
+
+
         // Hide flowers when mouse stops
         let mouseStopTimer;
         document.addEventListener('mousemove', () => {
@@ -1563,7 +1580,25 @@
             document.getElementById('closeModal').addEventListener('click', hideHelpModal);
             document.getElementById('closeModalBtn').addEventListener('click', hideHelpModal);
             document.getElementById('modeToggle').addEventListener('click', toggleVisualMode);
+            document.body.addEventListener('click', function initAudio() {
+            // Just touch the audio objects to initialize them
+            if (hoverSound) hoverSound.volume = 0;
+            if (meowSound) meowSound.volume = 0;
             
+            // Remove this after first interaction
+            document.body.removeEventListener('click', initAudio);
+        }, { once: true });
+        // Wait for window to load before initializing sounds
+        window.addEventListener('DOMContentLoaded', (event) => {
+            // Initialize audio objects
+            hoverSound = new Audio("{{ url_for('static', filename='sounds/hover.wav') }}");
+            meowSound = new Audio("{{ url_for('static', filename='sounds/meow.wav') }}");
+            
+            // Lower the volume slightly
+            hoverSound.volume = 0.3;
+            meowSound.volume = 0.4;
+        });
+
             // Interactive filter buttons
             document.getElementById('filterBodyCams').addEventListener('click', () => filterData('Body-worn Cameras'));
             document.getElementById('filterDrones').addEventListener('click', () => filterData('Drones'));
@@ -1571,6 +1606,120 @@
             document.getElementById('filterShotSpotter').addEventListener('click', () => filterData('Gunshot Detection'));
             document.getElementById('filterStingray').addEventListener('click', () => filterData('Cell Trackers'));
             document.getElementById('filterAll').addEventListener('click', () => filterData('All'));
+            // Filter function for interactive buttons
+        function filterData(type) {
+            showLoading('techChartLoading');
+            showLoading('timelineChartLoading');
+            showLoading('tableLoading');
+            
+            // Actually filter the dataset based on technology type
+            let filteredData = fullDataset;
+            
+            if (type !== 'All') {
+                // Real filtering by technology type
+                filteredData = fullDataset.filter(item => {
+                    const tech = item.technology ? item.technology.toLowerCase() : '';
+                    
+                    switch(type.toLowerCase()) {
+                        case 'body cameras':
+                            return tech.includes('body') && tech.includes('cam');
+                        case 'drones':
+                            return tech.includes('drone') || tech.includes('uav') || tech.includes('unmanned aerial');
+                        case 'license plate readers':
+                            return tech.includes('license plate') || tech.includes('alpr') || tech.includes('lpr');
+                        case 'gunshot detection':
+                            return tech.includes('gunshot') || tech.includes('shotspotter') || tech.includes('shot detection');
+                        case 'cell trackers':
+                            return tech.includes('cell') || tech.includes('stingray') || tech.includes('imsi') || tech.includes('cell-site');
+                        default:
+                            return false;
+                    }
+                });
+            }
+            
+            // Update UI with filtered data
+            processData(filteredData);
+            
+            // Add visual feedback for selected button
+            const buttons = document.querySelectorAll('.interactive-button');
+            buttons.forEach(btn => {
+                if (btn.textContent.includes(type) || (type === 'All' && btn.id === 'filterAll')) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Add pixel animation effect for visual feedback
+            const charts = document.querySelectorAll('.chart-container');
+            charts.forEach(chart => {
+                chart.classList.add('pixel-animation');
+                setTimeout(() => {
+                    chart.classList.remove('pixel-animation');
+                }, 500);
+            });
+            
+            // Update the data table with filtered results
+            paginateTableData(filteredData, 1, pageSize);
+            
+            // Hide loading indicators
+            hideLoading('techChartLoading');
+            hideLoading('timelineChartLoading');
+            hideLoading('tableLoading');
+        }
+
+        // Add event listeners to the interactive buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up filter buttons
+            document.getElementById('filterBodyCams').addEventListener('click', () => filterData('Body Cameras'));
+            document.getElementById('filterDrones').addEventListener('click', () => filterData('Drones'));
+            document.getElementById('filterALPR').addEventListener('click', () => filterData('License Plate Readers'));
+            document.getElementById('filterShotSpotter').addEventListener('click', () => filterData('Gunshot Detection'));
+            document.getElementById('filterStingray').addEventListener('click', () => filterData('Cell Trackers'));
+            document.getElementById('filterAll').addEventListener('click', () => filterData('All'));
+            
+            // Initialize with all data
+            filterData('All');
+        });
+
+        // Process data function to update all visualizations
+        function processData(data) {
+            // Update the charts and statistics with the filtered data
+            updateTechChart(data.slice(0, chartDataLimit));
+            updateTimelineChart(data.slice(0, chartDataLimit));
+            updateStatistics(data);
+            
+            // Update pagination for table
+            totalItems = data.length;
+            totalPages = Math.ceil(totalItems / pageSize);
+            currentPage = 1;
+            
+            // Update pagination UI
+            updatePaginationControls();
+            
+            // Update the data table
+            paginateTableData(data, currentPage, pageSize);
+        }
+
+        // Function to update statistics in the ATLAS card
+        function updateStatistics(data) {
+            // Count unique agencies
+            const uniqueAgencies = new Set(data.map(item => item.agency)).size;
+            document.getElementById('atlas-agencies').textContent = uniqueAgencies.toLocaleString() + '+';
+            
+            // Count unique states
+            const uniqueStates = new Set(data.map(item => item.state)).size;
+            document.getElementById('atlas-states').textContent = uniqueStates;
+            
+            // Count unique technologies
+            const uniqueTechs = new Set(data.map(item => item.technology)).size;
+            document.getElementById('atlas-tech').textContent = uniqueTechs;
+            
+            // Find earliest year (if you have year data)
+            const years = data.map(item => item.year).filter(year => !isNaN(parseInt(year)));
+            const earliestYear = years.length > 0 ? Math.min(...years) : 2010;
+            document.getElementById('atlas-year').textContent = earliestYear;
+}
 
             // Data loading functions
             function loadInitialData() {
@@ -1950,3 +2099,5 @@
     </script>
 </body>
 </html>
+
+{% endblock %}

@@ -1,0 +1,190 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.content-wrapper {
+    flex: 1 0 auto;
+}
+
+.pixel-footer {
+    background-color: var(--dark-pink);
+    border-top: 3px solid var(--primary-pink);
+    padding: 12px 15px 8px;
+    width: 100%;
+    z-index: 100;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.85rem;
+    box-shadow: 0 -2px 8px rgba(216, 180, 255, 0.2);
+    flex-shrink: 0;
+}
+
+.footer-container {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* Keep all your existing footer styles below */
+.footer-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.pixel-text {
+    color: var(--text-pink);
+    text-shadow: 1px 1px 0 var(--secondary-pink);
+    font-size: 0.95rem;
+    margin-right: 8px;
+}
+
+.pixel-cursor {
+    width: 8px;
+    height: 14px;
+    background-color: var(--accent-blue);
+    animation: blink 1s infinite steps(1);
+    position: absolute;
+    pointer-events: none;
+}
+
+.sources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.pixel-button {
+    background: rgba(255, 107, 180, 0.3);
+    color: var(--primary-pink);
+    border: 2px solid var(--primary-pink);
+    font-family: 'Press Start 2P', cursive;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin: 1rem 0;
+    transition: all 0.2s;
+    box-shadow: 3px 3px 0 var(--dark-pink);
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+}
+.pixel-button:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--accent-purple);
+    background-color: var(--secondary-pink);
+}
+
+.pixel-corner {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 6px 6px;
+    border-color: transparent transparent var(--accent-blue) transparent;
+    bottom: 0;
+    right: 0;
+}
+
+.footer-credits {
+    text-align: center;
+    margin: 12px 0 8px;
+    font-size: 0.75rem;
+}
+
+.pixel-hearts span {
+    display: inline-block;
+    margin: 0 2px;
+    animation: float 2s infinite ease-in-out;
+    font-size: 0.8rem;
+}
+
+.sound-control {
+    display: block;
+    width: fit-content;
+    margin: 0 auto 8px;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+}
+
+.pixel-cat {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    cursor: pointer;
+    width: 26px;
+    height: 20px;
+    transition: transform 0.2s;
+}
+
+.cat-ears {
+    position: relative;
+    z-index: 2;
+}
+
+.ear {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
+}
+
+.left-ear {
+    border-width: 0 6px 12px 6px;
+    border-color: transparent transparent var(--primary-pink) transparent;
+    left: -6px;
+    top: -6px;
+    transform: rotate(-30deg);
+}
+
+.right-ear {
+    border-width: 0 6px 12px 6px;
+    border-color: transparent transparent var(--primary-pink) transparent;
+    right: -6px;
+    top: -6px;
+    transform: rotate(30deg);
+}
+
+.cat-face {
+    width: 26px;
+    height: 18px;
+    background-color: var(--primary-pink);
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+}
+
+.cat-face::before, .cat-face::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: white;
+    border-radius: 50%;
+    top: 7px;
+}
+
+.cat-face::before {
+    left: 6px;
+}
+
+.cat-face::after {
+    right: 6px;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}

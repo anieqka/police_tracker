@@ -157,7 +157,7 @@ def load_data_from_csv(csv_file):
     try:
         df = pd.read_csv(csv_file)
 
-        # Ensure that the CSV has these columns.  Adjust as necessary to match *your* CSV header names.
+
         required_columns = ['AOSNUMBER', 'City', 'County', 'State', 'Agency', 'Type of LEA', 'Summary',
                             'Type of Juris', 'Technology', 'Vendor', 'Link 1', 'Link 1 Snapshot',
                             'Link 1 Source', 'Link 1 Type', 'Link 1 Date', 'Link 2', 'Link 2 Snapshot',

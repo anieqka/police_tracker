@@ -1,0 +1,95 @@
+<footer class="pixel-footer">
+    <div class="footer-container">
+        <div class="footer-header">
+            <h3 class="pixel-text">~* Data Sources *~</h3>
+            <div class="pixel-cursor" id="footer-cursor"></div>
+        </div>
+        
+        <div class="sources-grid">
+            <a href="https://atlasofsurveillance.org/" target="_blank" class="pixel-button" onmouseover="playHoverSound()">
+                <span>Atlas of Surveillance</span>
+                <div class="pixel-corner"></div>
+            </a>
+            
+            <a href="https://atlasofsurveillance.org/methodology" target="_blank" class="pixel-button" onmouseover="playHoverSound()">
+                <span>Methodology</span>
+                <div class="pixel-corner"></div>
+            </a>
+            
+            <a href="https://www.eff.org/pages/atlas-surveillance-us-mexico-border-communities" target="_blank" class="pixel-button" onmouseover="playHoverSound()">
+                <span>Border Communities</span>
+                <div class="pixel-corner"></div>
+            </a>
+        </div>
+        
+        <div class="footer-credits pixel-text">
+            <p>Made with ♡ by Annie</p>
+            <div class="pixel-hearts">
+                <span>♥</span>
+                <span>♥</span>
+                <span>♥</span>
+            </div>
+        </div>
+        
+        <div class="sound-control pixel-button" onclick="enableSound()">
+            ♫ Enable Sound Effects
+        </div>
+        
+        <div class="pixel-cat" id="footer-cat" onclick="meow()">
+            <div class="cat-ears">
+                <div class="ear left-ear"></div>
+                <div class="ear right-ear"></div>
+            </div>
+            <div class="cat-face"></div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Your existing JavaScript for sounds and interactions
+    let hoverSound, meowSound;
+    let soundEnabled = false;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize audio
+        hoverSound = new Audio("{{ url_for('static', filename='sounds/hover.wav') }}");
+        meowSound = new Audio("{{ url_for('static', filename='sounds/meow.wav') }}");
+        hoverSound.volume = 0.3;
+        meowSound.volume = 0.4;
+        
+        // Initialize cursor
+        const footer = document.querySelector('.pixel-footer');
+        footer.addEventListener('mousemove', (e) => {
+            const cursor = document.getElementById('footer-cursor');
+            if (cursor) {
+                cursor.style.left = `${e.clientX - footer.getBoundingClientRect().left}px`;
+                cursor.style.top = `${e.clientY - footer.getBoundingClientRect().top}px`;
+            }
+        });
+    });
+    
+    function enableSound() {
+        soundEnabled = true;
+        document.querySelector('.sound-control').style.display = 'none';
+    }
+    
+    function playHoverSound() {
+        if (soundEnabled && hoverSound) {
+            hoverSound.currentTime = 0;
+            hoverSound.play().catch(e => console.log("Audio play failed:", e));
+        }
+    }
+    
+    function meow() {
+        if (soundEnabled && meowSound) {
+            meowSound.currentTime = 0;
+            meowSound.play().catch(e => console.log("Audio play failed:", e));
+            
+            const cat = document.getElementById('footer-cat');
+            cat.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                cat.style.transform = 'scale(1)';
+            }, 200);
+        }
+    }
+</script>

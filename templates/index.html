@@ -23,6 +23,34 @@
             --accent-purple: #d8b4ff;
             --accent-blue: #b4e0ff;
         }
+                /* ===== COMMON STYLES ===== */
+                body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: var(--text-pink);
+            overflow-x: hidden;
+            position: relative;
+            background: 
+                linear-gradient(transparent 95%, rgba(255, 105, 180, 0.1) 96%),
+                linear-gradient(90deg, transparent 95%, rgba(255, 105, 180, 0.1) 96%);
+            background-size: 20px 20px;
+            background-color: var(--dark-bg);
+            transition: all 0.5s ease;
+        }
+
+        /* Soft mode colors */
+        .soft-mode {
+            --primary-pink: #ff9ac8;
+            --secondary-pink: #ffb3d6;
+            --light-pink: #ffe6f2;
+            --dark-pink: #e673a5;
+            --text-pink: #91235c;
+            --dark-bg: #d7709f;
+            --neon-blue: #66ccff;
+            --accent-purple: #cc99ff;
+        }
 
         body {
             font-family: 'Poppins', sans-serif;
@@ -342,49 +370,7 @@
             font-family: 'Press Start 2P', cursive;
         }
 
-        .file-upload {
-            text-align: center;
-            margin: 1rem 0;
-        }
 
-        .file-upload button {
-            background-color: var(--primary-pink);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 0;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 0.8rem;
-            font-weight: 400;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 4px 4px 0px var(--dark-pink);
-        }
-
-        .file-upload button:hover {
-            background-color: var(--dark-pink);
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px var(--dark-pink);
-        }
-
-        .file-upload button::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
-        }
-
-        .file-upload button:hover::before {
-            left: 100%;
-        }
 
         #file-info {
             margin-top: 0.5rem;
@@ -509,6 +495,7 @@
             z-index: 9998;
         }
 
+
         /* Retro scanlines effect */
         .scanlines {
             position: fixed;
@@ -527,10 +514,70 @@
             animation: scanline 8s linear infinite;
         }
 
+        /* Pixel animation */
+        .pixel-animation {
+            animation: pixelate 0.5s infinite;
+        }
+
+        /* Toggle button style */
+        .toggle-animation {
+            position: fixed;
+            top: 11px;
+            left:1125px;
+            z-index: 10000;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            cursor: pointer;
+            border: 2px solid #ff6bb4;
+            border-radius: 5px;
+        }
+
+        
+
+        .toggle-animation:hover {
+            background-color: rgba(255, 107, 180, 0.7);
+            color: #000;
+            text-shadow: 0 0 5px #fff;
+        }
+
+        /* Keyframe animations */
         @keyframes scanline {
             0% { background-position: 0 0; }
             100% { background-position: 0 100%; }
         }
+
+        @keyframes pixelate {
+            0% { filter: blur(0px); }
+            50% { filter: blur(1px); }
+            100% { filter: blur(0px); }
+        }
+
+        /* Disabled state */
+        .effects-disabled .scanlines {
+            display: none !important; /* Completely hides scanlines */
+        }
+
+        .effects-disabled .pixel-animation {
+            animation: none !important;
+            filter: none !important;
+        }
+
+        .effects-disabled #retroToggle {
+            background-color: rgba(255, 107, 180, 0.7);
+            color: #000;
+        }
+        .effects-disabled .pixel-animation {
+            animation: none !important;
+        }
+
+        .effects-disabled #retroToggle {
+            background-color: rgba(255, 107, 180, 0.7);
+            color: #000;
+        }
+
+
 
         @media (max-width: 768px) {
             .table-row {
@@ -558,39 +605,30 @@
 <body>
     <div class="grid-overlay"></div>
     <div class="scanlines"></div>
+    <button id="retroToggle" class="toggle-animation">DISABLE EFFECTS</button>
 
     <div class="content-wrapper">
         <nav class="navbar">
             <div class="container">
                 <a href="/#table">Data Table</a>
                 <a href="/#map">Interactive Map</a>
-                <a href="/data.html" class="active">Data Wars</a>
+                <a href="/data.html" >Data Wars</a>
             </div>
         </nav>
-
-        <div class="container">
-            <div class="about-section pixel-border">
-                <h1>Police Tech Atlas</h1>
-                <p>
-                    Welcome to the Police Tech Atlas, an interactive tool designed to illuminate the landscape of law enforcement technology across the United States. Inspired by the Atlas of Surveillance, this platform aims to empower journalists, researchers, and engaged citizens with clear, accessible data.
-                </p>
-                <p>
-                    Our mission is to foster transparency and understanding by visualizing complex data through user-friendly maps and tables. Here, you can explore the deployment of various surveillance technologies, understand their impact, and track their prevalence in different communities.
-                </p>
-                
-                <div class="citation-container">
-                    <blockquote>
-                        One of the primary goals of the Atlas of Surveillance is to provide journalists and researchers with the data they need to do in-depth reports on law enforcement surveillance around the country. To that end, we've made our source data available, but we've also compiled this library of data sets and data projects from other organizations that informed the Atlas of Surveillance or are useful in tandem with our research.
-                    </blockquote>
-                    <cite>Atlas of Surveillance</cite>
-                </div>
-                
-                <p>
-                    To get started, simply upload a CSV file containing relevant data. The information will be processed and displayed both in an interactive map and a detailed table. Use the map to visualize geographic patterns and the table to delve into specific details. Navigate through the data using pagination, and leverage the search features for targeted exploration.
-                </p>
-                <p>
-                    This platform is more than just a data repository; it's a tool for informed discourse and critical analysis. We believe that by making this information accessible, we can contribute to a more informed and engaged public.
-                </p>
+        <div class="about-section pixel-border">
+            <h1>Police Tech Atlas</h1>
+            <p>
+                Welcome to the Police Tech Atlas, an interactive resource that sheds light on the growing field of law enforcement and surveillance technology in the US. You can see and comprehend the expanding technological footprint of policing in communities across the country with our tool.
+            </p>
+            <p>
+              Through our vibrant, accessible interface, you can track the deployment of facial recognition systems, automated license plate readers, drones, body-worn cameras, predictive policing software, and other emerging surveillance technologies. Explore how these tools are distributed geographically and identify patterns that might otherwise remain hidden.
+            </p>
+            
+            <div class="citation-container">
+              <blockquote>
+                "The spread of surveillance technologies poses enormous challenges to traditional conceptions of privacy, civil liberties, and human rights. Only through creating knowledge, transparency, and greater public awareness can communities effectively advocate for appropriate constraints on the use of surveillance technology."
+              </blockquote>
+              <cite>Atlas of Surveillance, Electronic Frontier Foundation</cite>
             </div>
 
             <h1>Police Technology Tracker</h1>
@@ -627,6 +665,7 @@
 
             <div id="map" class="pixel-border"></div>
         </div>
+        {% include "footer.html" %}
     </div>
 
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -761,25 +800,47 @@
             }
         }
 
-        // Function to load CSV data
-        function loadCSVData() {
-            const loadingElement = document.getElementById('loading');
-            loadingElement.style.display = 'block';
-            isLoading = true;
+// Function to load CSV data
+function loadCSVData() {
+    const loadingElement = document.getElementById('loading');
+    loadingElement.style.display = 'block';
+    isLoading = true;
 
-            Papa.parse('/static/deployments_with_coords.csv', {
+    // First load coordinates data
+    Papa.parse('/static/deployments_with_coords.csv', {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function(coordsResults) {
+            // Now load the additional data file with vendor and technology info
+            Papa.parse('/static/data/cleaned_data/cleaned_atlas.csv', {
                 download: true,
                 header: true,
                 skipEmptyLines: true,
-                complete: function(results) {
-                    // Process the data
-                    allData = results.data.map(item => {
+                complete: function(cleanedResults) {
+                    // Create a lookup map from cleaned_atlas data
+                    const dataMap = {};
+                    cleanedResults.data.forEach(item => {
+                        // Create a unique key based on agency name or other identifiers
+                        const key = `${item.Agency}-${item.City}-${item.State}`.toLowerCase();
+                        dataMap[key] = {
+                            vendor: item.Vendor,
+                            technology: item.tech_type
+                        };
+                    });
+                    
+                    // Process the coordinates data and merge with cleaned data
+                    allData = coordsResults.data.map(item => {
+                        // Create the same key for matching
+                        const lookupKey = `${item.Agency}-${item.City}-${item.State}`.toLowerCase();
+                        const additionalData = dataMap[lookupKey] || {};
+                        
                         return {
                             city: item.City,
                             state: item.State,
                             agency: item.Agency,
-                            technology: item.Technology,
-                            vendor: item.Vendor,
+                            technology: additionalData.technology || item.tech_type,
+                            vendor: additionalData.vendor || item.Vendor,
                             summary: item.Summary,
                             link: item.Link,
                             lat: parseFloat(item.Latitude),
@@ -803,12 +864,19 @@
                     addMarkersToMap();
                 },
                 error: function(error) {
-                    console.error('Error loading CSV:', error);
-                    loadingElement.textContent = 'Error loading data. Please try again.';
+                    console.error('Error loading cleaned data:', error);
+                    loadingElement.textContent = 'Error loading additional data. Please try again.';
                     isLoading = false;
                 }
             });
+        },
+        error: function(error) {
+            console.error('Error loading coordinates CSV:', error);
+            loadingElement.textContent = 'Error loading data. Please try again.';
+            isLoading = false;
         }
+    });
+}
 
         // Function to add markers to the map
         function addMarkersToMap() {
@@ -923,7 +991,29 @@
 
         // Load data when the page loads
         document.addEventListener('DOMContentLoaded', loadCSVData);
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.getElementById('retroToggle');
+            const body = document.body;
+            
+            // Check for saved preference
+            if (localStorage.getItem('retroEffectsDisabled') === 'true') {
+                body.classList.add('effects-disabled');
+                toggleButton.textContent = 'ENABLE EFFECTS';
+            }
+            
+            toggleButton.addEventListener('click', function() {
+                const isDisabled = !body.classList.contains('effects-disabled');
+                
+                body.classList.toggle('effects-disabled');
+                toggleButton.textContent = isDisabled ? 'ENABLE EFFECTS' : 'DISABLE EFFECTS';
+                localStorage.setItem('retroEffectsDisabled', isDisabled);
+            });
+        });
+
+
+        
     </script>
 </body>
+
 </html>
 {% endblock %}
